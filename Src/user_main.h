@@ -12,6 +12,7 @@
  * Real-time thread loop
  */
 void rtLoop();
+void init();
 
 // C functions
 
@@ -19,9 +20,6 @@ extern "C" {
 #endif
 
     void preInit();
-
-    void init();
-
 
 #ifdef __cplusplus
 }

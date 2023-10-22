@@ -6,13 +6,19 @@
 #include "gpio.h"
 
 extern "C" void StartDefaultTask(void *argument) {
+    init();
+
     while (true) {
         rtLoop();
     }
 }
 
+void preInit() {
+    // Init code before OS starts
+}
+
 void init() {
-    
+    // Init after os start
 }
 
 void rtLoop() {
