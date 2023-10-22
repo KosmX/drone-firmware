@@ -6,12 +6,21 @@
 #define STUFF_USER_MAIN_H
 
 #ifdef __cplusplus
+
+
+/**
+ * Real-time thread loop
+ */
+void rtLoop();
+
+// C functions
+
 extern "C" {
 #endif
 
+    void preInit();
 
     void init();
-    void loop();
 
 
 #ifdef __cplusplus
