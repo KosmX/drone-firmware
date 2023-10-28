@@ -48,11 +48,11 @@ else ()
     add_compile_options(-Og -g)
 endif ()
 
-include_directories(${includes} Src)
+include_directories(${includes} Drivers/Bosch Src)
 
 add_definitions(${defines})
 
-file(GLOB_RECURSE SOURCES ${sources} "Src/*.*")
+file(GLOB_RECURSE SOURCES ${sources} "Drivers/Bosch/*.*" "Src/*.*")
 
 set(LINKER_SCRIPT $${CMAKE_SOURCE_DIR}/${linkerScript})
 
