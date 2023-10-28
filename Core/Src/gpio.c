@@ -48,8 +48,6 @@
      PA7   ------> SPI1_MOSI
      PB0   ------> S_TIM3_CH3
      PB1   ------> S_TIM3_CH4
-     PE7   ------> UART7_RX
-     PE8   ------> UART7_TX
      PE9   ------> S_TIM1_CH1
      PE11   ------> S_TIM1_CH2
      PE12   ------> SPI4_SCK
@@ -75,8 +73,6 @@
      PB7   ------> I2C1_SDA
      PB8   ------> I2C1_SCL
      PB9   ------> I2C2_SDA
-     PE0   ------> UART8_RX
-     PE1   ------> UART8_TX
 */
 void MX_GPIO_Init(void)
 {
@@ -150,14 +146,6 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
   HAL_GPIO_Init(EXTRA_PB2_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : PE7 PE8 */
-  GPIO_InitStruct.Pin = GPIO_PIN_7|GPIO_PIN_8;
-  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-  GPIO_InitStruct.Alternate = GPIO_AF8_UART7;
-  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PE9 PE11 PE13 PE14 */
   GPIO_InitStruct.Pin = GPIO_PIN_9|GPIO_PIN_11|GPIO_PIN_13|GPIO_PIN_14;
@@ -238,14 +226,6 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
   GPIO_InitStruct.Alternate = GPIO_AF9_I2C2;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : PE0 PE1 */
-  GPIO_InitStruct.Pin = GPIO_PIN_0|GPIO_PIN_1;
-  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-  GPIO_InitStruct.Alternate = GPIO_AF8_UART8;
-  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
 }
 

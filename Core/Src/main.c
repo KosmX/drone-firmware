@@ -99,6 +99,8 @@ int main(void)
   MX_USART2_Init();
   MX_USART6_Init();
   MX_USB_OTG_FS_USB_Init();
+  MX_UART8_Init();
+  MX_UART7_Init();
   /* USER CODE BEGIN 2 */
   preInit();
   /* USER CODE END 2 */

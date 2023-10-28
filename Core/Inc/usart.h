@@ -32,6 +32,10 @@ extern "C" {
 
 /* USER CODE END Includes */
 
+extern UART_HandleTypeDef huart7;
+
+extern UART_HandleTypeDef huart8;
+
 extern UART_HandleTypeDef huart1;
 
 extern USART_HandleTypeDef husart2;
@@ -42,6 +46,8 @@ extern USART_HandleTypeDef husart6;
 
 /* USER CODE END Private defines */
 
+void MX_UART7_Init(void);
+void MX_UART8_Init(void);
 void MX_USART1_UART_Init(void);
 void MX_USART2_Init(void);
 void MX_USART6_Init(void);
