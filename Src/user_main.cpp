@@ -25,11 +25,14 @@ void init() {
 }
 
 void rtLoop() {
+
+    static std::string msg = "hello\n";
+
     static bool on = false;
-    HAL_GPIO_WritePin(EXTRA_PB2_GPIO_Port, EXTRA_PB2_Pin, on ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(LED_D1_GPIO_Port, LED_D1_Pin, on ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    //log("hello");
+    HAL_UART_Transmit_DMA(&huart8, reinterpret_cast<const uint8_t *>(msg.c_str()), msg.size());
+
     on = !on;
-    for (int i = 0; i < 1000000; ++i) {
-        asm("isb"); // do nothing efficiently
-        log("hello");
-    }
+    vTaskDelay(pdMS_TO_TICKS(500));
 }
