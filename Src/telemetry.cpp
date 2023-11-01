@@ -5,7 +5,7 @@
 #include "telemetry.h"
 
 #include "cmsis_os2.h"
-#include "mutex_wapper.h"
+#include "os/mutex_wapper.h"
 
 
 // static

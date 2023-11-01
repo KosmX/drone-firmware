@@ -4,7 +4,7 @@
 
 #include "user_main.h"
 #include "gpio.h"
-#include "tasks.h"
+#include "os/tasks.h"
 #include "telemetry.h"
 
 extern "C" void StartDefaultTask(void *argument) {

@@ -7,9 +7,9 @@
 
 #ifdef __cplusplus
 
-#include "os.h"
+#include "os/os.h"
 #include "usart.h"
-#include "mutex_wapper.h"
+#include "os/mutex_wapper.h"
 
 #include <string>
 #include <memory>
