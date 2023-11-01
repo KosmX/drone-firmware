@@ -68,7 +68,7 @@ void tlm::UartTelemetry::log(std::unique_ptr<std::string> &&str) {
     auto str_ptr = std::move(str);
 
     auto ptr = str_ptr.release();
-    if (xQueueSend(queueHandle, ptr, portMAX_DELAY) != pdTRUE) {
+    if (xQueueSend(queueHandle, &ptr, portMAX_DELAY) != pdTRUE) {
         delete ptr; // queue wasn't successful, deleting message
     }
 }
