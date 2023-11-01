@@ -4,6 +4,8 @@
 
 #include "user_main.h"
 #include "gpio.h"
+#include "tasks.h"
+#include "telemetry.h"
 
 extern "C" void StartDefaultTask(void *argument) {
     init();
@@ -19,6 +21,7 @@ void preInit() {
 
 void init() {
     // Init after os start
+    init_tasks(); // Start task threads
 }
 
 void rtLoop() {
@@ -27,5 +30,6 @@ void rtLoop() {
     on = !on;
     for (int i = 0; i < 1000000; ++i) {
         asm("isb"); // do nothing efficiently
+        log("hello");
     }
 }
