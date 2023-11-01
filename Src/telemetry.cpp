@@ -23,7 +23,7 @@ const osThreadAttr_t telemetry_attr = {
         .priority = (osPriority_t) osPriorityRealtime,
 };
 
-tlm::UartTelemetry::UartTelemetry(UART_HandleTypeDef& huart): queueHandle{xQueueCreate(8, sizeof(void*))}, uartSemaphore{}, uart{huart} {
+tlm::UartTelemetry::UartTelemetry(UART_HandleTypeDef& huart): queueHandle{xQueueCreate(8, sizeof(void*))}, uart{huart} {
 
     uartSemaphore = xSemaphoreCreateBinary();
     UartTelemetry::INSTANCE = this;
@@ -36,9 +36,11 @@ tlm::UartTelemetry::UartTelemetry(UART_HandleTypeDef& huart): queueHandle{xQueue
 
 
     HAL_UART_RegisterCallback(&huart, HAL_UART_CallbackIDTypeDef::HAL_UART_TX_COMPLETE_CB_ID, [](UART_HandleTypeDef *huart) {
-        auto valTrue = pdTRUE;
-        xSemaphoreGiveFromISR(UartTelemetry::INSTANCE->uartSemaphore, &valTrue);
+        auto newTask = pdFALSE;
+        xSemaphoreGiveFromISR(UartTelemetry::INSTANCE->uartSemaphore, &newTask);
     });
+
+    xSemaphoreGive(uartSemaphore);
 }
 
 [[noreturn]] void tlm::UartTelemetry::run() {
