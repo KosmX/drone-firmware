@@ -6,6 +6,9 @@
 #include "gpio.h"
 #include "os/tasks.h"
 #include "telemetry.h"
+#include "os/led.h"
+
+os::led led{LED_D1_GPIO_Port, LED_D1_Pin};
 
 extern "C" void StartDefaultTask(void *argument) {
     init();
@@ -30,7 +33,7 @@ void rtLoop() {
     static std::string msg = "hello\n";
 
     static bool on = false;
-    HAL_GPIO_WritePin(LED_D1_GPIO_Port, LED_D1_Pin, on ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    led.toggle();
     log("hello\n");
     //HAL_UART_Transmit_DMA(&huart8, reinterpret_cast<const uint8_t *>(msg.c_str()), msg.size());
 
