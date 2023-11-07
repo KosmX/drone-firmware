@@ -7,19 +7,19 @@
 
 namespace drv {
 
-    bmp::bmp(I2C_HandleTypeDef *i2c): dev{0, this, BMP3_I2C_INTF}, hi2c{i2c} {
+    bmp::bmp(os::i2c& i2c, uint8_t devaddr): dev{0, this, BMP3_I2C_INTF}, i2c{i2c}, addr{static_cast<uint8_t>(devaddr << 1)} {
 
         dev.delay_us = [](uint32_t period, void* _this){
             vTaskDelay(pdMS_TO_TICKS(period)); // no active waiting
         };
 
-        dev.write = [](uint8_t reg_addr, const uint8_t* read_data, uint32_t len, void* pthis) -> BMP3_INTF_RET_TYPE {
-            return reinterpret_cast<bmp*>(pthis)->write(reg_addr, read_data, len);
+        dev.write = [](uint8_t reg_addr, const uint8_t* writeData, uint32_t len, void* pthis) -> BMP3_INTF_RET_TYPE {
+            auto* _this = reinterpret_cast<bmp*>(pthis);
+
+            _this->i2c.write(_this->addr, reg_addr, writeData, len, true);
+
+            return 0;
         };
     }
 
-    int8_t bmp::write(uint8_t reg_addr, const uint8_t *read_data, uint32_t len) {
-
-        return 0;
-    }
 }

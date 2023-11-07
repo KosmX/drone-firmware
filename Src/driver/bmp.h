@@ -8,18 +8,18 @@
 #ifdef __cplusplus
 #include "bmp3.h"
 #include "i2c.h"
+#include "os/os_i2c.h"
 
 namespace drv {
 
     class bmp {
     private:
         struct bmp3_dev dev;
-        I2C_HandleTypeDef* hi2c;
-
-        int8_t write(uint8_t reg_addr, const uint8_t *read_data, uint32_t len);
+        os::i2c& i2c;
+        uint8_t addr;
 
     public:
-        bmp(I2C_HandleTypeDef* i2c);
+        bmp(os::i2c& i2c, uint8_t devaddr);
     };
 }
 
