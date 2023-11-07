@@ -1,9 +1,9 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    os_i2c.h
+  * @file    i2c.h
   * @brief   This file contains all the function prototypes for
-  *          the os_i2c.c file
+  *          the i2c.c file
   ******************************************************************************
   * @attention
   *

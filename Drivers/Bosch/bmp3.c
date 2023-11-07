@@ -2049,13 +2049,13 @@ static int8_t set_advance_settings(uint32_t desired_settings, const struct bmp3_
     {
         if (desired_settings & BMP3_SEL_I2C_WDT_EN)
         {
-            /* Set the os_i2c watch dog enable bits */
+            /* Set the i2c watch dog enable bits */
             reg_data = BMP3_SET_BITS(reg_data, BMP3_I2C_WDT_EN, adv_settings.i2c_wdt_en);
         }
 
         if (desired_settings & BMP3_SEL_I2C_WDT)
         {
-            /* Set the os_i2c watch dog select bits */
+            /* Set the i2c watch dog select bits */
             reg_data = BMP3_SET_BITS(reg_data, BMP3_I2C_WDT_SEL, adv_settings.i2c_wdt_sel);
         }
 

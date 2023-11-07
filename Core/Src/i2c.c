@@ -1,7 +1,7 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    os_i2c.c
+  * @file    i2c.c
   * @brief   This file provides code for the configuration
   *          of the I2C instances.
   ******************************************************************************

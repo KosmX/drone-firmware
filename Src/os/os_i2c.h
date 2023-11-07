@@ -19,19 +19,19 @@ namespace os {
      *
      * This uses interrupts to start a transmission and suspend the callee thread until transmission is finished.
      */
-    class os_i2c {
+    class i2c {
     private:
         I2C_HandleTypeDef* hi2c;
         SemaphoreHandle_t readSemaphore;
         SemaphoreHandle_t writeSemaphore;
         Mutex mutex;
 
-        explicit os_i2c(I2C_HandleTypeDef* i2c);
+        explicit i2c(I2C_HandleTypeDef* i2c);
 
-        os_i2c(os_i2c&): hi2c{}, readSemaphore{}, writeSemaphore{} {}; // disable
-        os_i2c& operator=(const os_i2c&);
+        i2c(i2c&): hi2c{}, readSemaphore{}, writeSemaphore{} {}; // disable
+        i2c& operator=(const i2c&);
     public:
-        static os_i2c* getFor(I2C_HandleTypeDef* i2c);
+        static i2c* getFor(I2C_HandleTypeDef* i2c);
 
         /**
          * Read from this I2C, current thread will be suspended until result.
