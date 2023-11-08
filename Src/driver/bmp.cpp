@@ -18,8 +18,23 @@ namespace drv {
 
             _this->i2c.write(_this->addr, reg_addr, writeData, len, true);
 
-            return 0;
+            return BMP3_INTF_RET_SUCCESS;
         };
+
+        dev.read = [](uint8_t reg_addr, uint8_t* readData, uint32_t len, void* pthis) -> BMP3_INTF_RET_TYPE {
+            auto* _this = reinterpret_cast<bmp*>(pthis);
+
+            _this->i2c.read(_this->addr, reg_addr, readData, len);
+
+            return BMP3_INTF_RET_SUCCESS;
+        };
+
+
+
+        auto r = bmp3_init(&dev);
+        if (r != BMP3_OK) {
+            Error_Handler(); // for callstack
+        }
     }
 
 }
