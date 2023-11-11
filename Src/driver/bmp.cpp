@@ -40,25 +40,35 @@ namespace drv {
         settings.press_en = BMP3_ENABLE;
         settings.temp_en = true;
 
+        settings.int_settings.drdy_en = BMP3_ENABLE;
         settings.odr_filter.press_os = BMP3_OVERSAMPLING_8X;
         settings.odr_filter.temp_os = BMP3_NO_OVERSAMPLING;
         settings.odr_filter.iir_filter = BMP3_IIR_FILTER_COEFF_3;
         settings.odr_filter.odr = BMP3_ODR_50_HZ;
         uint16_t settings_sel;
-        settings_sel = BMP3_SEL_PRESS_EN | BMP3_SEL_TEMP_EN | BMP3_SEL_PRESS_OS | BMP3_SEL_TEMP_OS | BMP3_SEL_ODR;
+        settings_sel = BMP3_SEL_PRESS_EN | BMP3_SEL_TEMP_EN | BMP3_SEL_PRESS_OS | BMP3_SEL_TEMP_OS | BMP3_SEL_ODR | BMP3_SEL_DRDY_EN;
 
-        settings.op_mode = BMP3_MODE_FORCED;
+        settings.op_mode = BMP3_MODE_NORMAL;
 
         r = bmp3_set_sensor_settings(settings_sel, &settings, &dev);
         if (r != BMP3_OK) {
             Error_Handler(); // for callstack
         }
+        bmp3_set_op_mode(&settings, &dev);
     }
 
-    std::pair<float, float> bmp::activateAndRead() {
-        bmp3_set_op_mode(&settings, &dev);
-        bmp3_get_sensor_data(BMP3_PRESS_TEMP, &data, &dev);
-        return std::pair(data.pressure, data.temperature);
+    std::optional<std::pair<float, float>> bmp::activateAndRead() {
+        //bmp3_set_op_mode(&settings, &dev);
+        struct bmp3_status status{};
+        auto rslt = bmp3_get_status(&status, &dev);
+
+        if (rslt == BMP3_OK && status.intr.drdy == BMP3_ENABLE) {
+
+            bmp3_get_sensor_data(BMP3_PRESS_TEMP, &data, &dev);
+            return std::pair(data.pressure, data.temperature);
+        } else {
+            return std::nullopt;
+        }
     }
 
 }

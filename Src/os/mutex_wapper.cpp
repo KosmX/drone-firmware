@@ -10,7 +10,7 @@
 namespace os {
     Mutex::Mutex(): mutex(xSemaphoreCreateMutexStatic(&pxMutexBuffer)) {}
 
-    MutexLock Mutex::lock() {
+    [[nodiscard]] MutexLock Mutex::lock() {
         xSemaphoreTake(mutex, portMAX_DELAY);
         return MutexLock(*this);
     }
@@ -19,12 +19,16 @@ namespace os {
         xSemaphoreGive(mutex);
     }
 
+    void Mutex::lockUnsafe() {
+        xSemaphoreTake(mutex, portMAX_DELAY);
+    }
+
     MutexLock::MutexLock(Mutex &m): mutex(m) {}
 
     MutexLock::~MutexLock() {
         if (locked) {
-            mutex.unlock();
             locked = false;
+            mutex.unlock();
         }
     }
 
@@ -33,5 +37,12 @@ namespace os {
         this->mutex = other.mutex;
         other.locked = false;
         return *this;
+    }
+
+    void MutexLock::unlock() {
+        if (locked) {
+            locked = false;
+            mutex.unlock();
+        }
     }
 } // os

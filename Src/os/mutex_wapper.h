@@ -19,7 +19,9 @@ namespace os {
     public:
         explicit MutexLock(Mutex& m);
 
-        MutexLock& operator=(MutexLock&& other) noexcept ;
+        void unlock();
+
+        MutexLock& operator=(MutexLock&& other) noexcept;
 
         ~MutexLock();
     };
@@ -31,6 +33,8 @@ namespace os {
     public:
 
         Mutex();
+
+        void lockUnsafe();
 
         MutexLock lock();
 

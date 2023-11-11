@@ -10,6 +10,7 @@
 #include "i2c.h"
 #include "os/os_i2c.h"
 #include <utility>
+#include <optional>
 
 namespace drv {
 
@@ -25,7 +26,7 @@ namespace drv {
     public:
         bmp(os::i2c& i2c, uint8_t devaddr);
 
-        std::pair<float, float> activateAndRead();
+        std::optional<std::pair<float, float>> activateAndRead();
     };
 }
 
