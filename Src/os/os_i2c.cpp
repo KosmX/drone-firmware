@@ -82,7 +82,7 @@ namespace os {
         if (entry != instances.cend()) {
             return entry->second;
         }
-        instances.push_back(std::pair(i2c, new i2c(i2c)));
+        instances.push_back(std::pair(i2c, new class i2c(i2c)));
         return (instances[instances.size() - 1]).second;
     }
 

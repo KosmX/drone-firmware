@@ -22,6 +22,16 @@ namespace os {
     MutexLock::MutexLock(Mutex &m): mutex(m) {}
 
     MutexLock::~MutexLock() {
-        mutex.unlock();
+        if (locked) {
+            mutex.unlock();
+            locked = false;
+        }
+    }
+
+    MutexLock &MutexLock::operator=(MutexLock&& other) noexcept {
+        this->locked = other.locked;
+        this->mutex = other.mutex;
+        other.locked = false;
+        return *this;
     }
 } // os

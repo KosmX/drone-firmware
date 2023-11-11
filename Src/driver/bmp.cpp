@@ -7,7 +7,8 @@
 
 namespace drv {
 
-    bmp::bmp(os::i2c& i2c, uint8_t devaddr): dev{0, this, BMP3_I2C_INTF}, i2c{i2c}, addr{static_cast<uint8_t>(devaddr << 1)} {
+    bmp::bmp(os::i2c& i2c, uint8_t devaddr): dev{0, this, BMP3_I2C_INTF}, settings{}, i2c{i2c}, addr{static_cast<uint8_t>(devaddr << 1)} {
+
 
         dev.delay_us = [](uint32_t period, void* _this){
             vTaskDelay(pdMS_TO_TICKS(period)); // no active waiting
@@ -30,11 +31,34 @@ namespace drv {
         };
 
 
-
         auto r = bmp3_init(&dev);
         if (r != BMP3_OK) {
             Error_Handler(); // for callstack
         }
+
+        //settings.int_settings.drdy_en = BMP3_ENABLE;
+        settings.press_en = BMP3_ENABLE;
+        settings.temp_en = true;
+
+        settings.odr_filter.press_os = BMP3_OVERSAMPLING_8X;
+        settings.odr_filter.temp_os = BMP3_NO_OVERSAMPLING;
+        settings.odr_filter.iir_filter = BMP3_IIR_FILTER_COEFF_3;
+        settings.odr_filter.odr = BMP3_ODR_50_HZ;
+        uint16_t settings_sel;
+        settings_sel = BMP3_SEL_PRESS_EN | BMP3_SEL_TEMP_EN | BMP3_SEL_PRESS_OS | BMP3_SEL_TEMP_OS | BMP3_SEL_ODR;
+
+        settings.op_mode = BMP3_MODE_FORCED;
+
+        r = bmp3_set_sensor_settings(settings_sel, &settings, &dev);
+        if (r != BMP3_OK) {
+            Error_Handler(); // for callstack
+        }
+    }
+
+    std::pair<float, float> bmp::activateAndRead() {
+        bmp3_set_op_mode(&settings, &dev);
+        bmp3_get_sensor_data(BMP3_PRESS_TEMP, &data, &dev);
+        return std::pair(data.pressure, data.temperature);
     }
 
 }

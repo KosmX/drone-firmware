@@ -14,8 +14,12 @@ namespace os {
     class MutexLock {
     private:
         Mutex& mutex;
+        bool locked = true;
+        MutexLock(const MutexLock&);
     public:
         explicit MutexLock(Mutex& m);
+
+        MutexLock& operator=(MutexLock&& other) noexcept ;
 
         ~MutexLock();
     };
