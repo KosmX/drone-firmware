@@ -56,20 +56,17 @@ namespace os {
         return HAL_OK;
     }
 
-    HAL_StatusTypeDef i2c::write(uint8_t dev_addr, uint8_t reg_addr, const uint8_t *write_data, uint32_t len, bool suspend) {
+    HAL_StatusTypeDef i2c::write(uint8_t dev_addr, uint8_t reg_addr, const uint8_t *write_data, uint32_t len) {
         auto lock = mutex.lock();
 
         xSemaphoreTake(writeSemaphore, 0);
 
-        auto r = HAL_I2C_Mem_Write_DMA(hi2c, dev_addr, reg_addr, I2C_MEMADD_SIZE_8BIT, const_cast<uint8_t*>(write_data), len);
+        auto r = HAL_I2C_Mem_Write_DMA(hi2c, dev_addr, reg_addr, I2C_MEMADD_SIZE_8BIT,
+                                       const_cast<uint8_t *>(write_data), len);
         if (r != HAL_OK) return r;
 
-        if (suspend) {
-            xSemaphoreTake(writeSemaphore, portMAX_DELAY);
-            return HAL_OK;
-        } else {
-            return HAL_OK; // working?
-        }
+        xSemaphoreTake(writeSemaphore, portMAX_DELAY);
+        return HAL_OK;
     }
 
 

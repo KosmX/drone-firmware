@@ -44,15 +44,14 @@ namespace os {
         HAL_StatusTypeDef read(uint8_t dev_addr, uint8_t reg_addr, uint8_t *read_data, uint32_t len);
 
         /**
-         * Write into I2C device
+         * Write into I2C device, returns when read operation is finished.
          * @param dev_addr device address shifted left by 1
          * @param reg_addr mem addr
          * @param write_data data to write
          * @param len amount of data to write
-         * @param suspend suspend thread until transmission is finished
          * @return status
          */
-        HAL_StatusTypeDef write(uint8_t dev_addr, uint8_t reg_addr, const uint8_t *write_data, uint32_t len, bool suspend = false);
+        HAL_StatusTypeDef write(uint8_t dev_addr, uint8_t reg_addr, const uint8_t *write_data, uint32_t len);
     };
 
 } // os
