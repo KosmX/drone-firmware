@@ -8,16 +8,29 @@
 
 namespace sensor {
     os::AtomicData<std::pair<float, float>> bmpData{};
+    os::AtomicData<bmm150_mag_data> bmmData{};
+
     void i2c_init() {
         auto timer = xTimerCreate(
                 "i2c1_read_timing",
-                pdMS_TO_TICKS(10),
+                pdMS_TO_TICKS(20),
                 true,
                 nullptr,
                 [](TimerHandle_t timer) {
-                    auto r = dev::bmp->activateAndRead();
-                    if (r.has_value()) {
-                        bmpData = r.value();
+
+                    // BMM150
+                    {
+                        dev::bmm->startMeasurement();
+                        auto r = dev::bmm->getData();
+                        bmmData = r;
+                    }
+
+                    // BMP390
+                    {
+                        auto r = dev::bmp->activateAndRead();
+                        if (r.has_value()) {
+                            bmpData = r.value();
+                        }
                     }
                 });
         xTimerStart(timer, 10);

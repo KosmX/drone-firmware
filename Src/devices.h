@@ -12,6 +12,7 @@
 #include "os/led.h"
 #include "os/os_i2c.h"
 #include "driver/bmp.h"
+#include "driver/bmm.h"
 
 namespace dev {
 
@@ -23,6 +24,7 @@ namespace dev {
 // devices
 
     extern drv::bmp* bmp;
+    extern drv::bmm* bmm;
 
 // init function (call after OS is ready)
     void init();

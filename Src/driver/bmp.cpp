@@ -17,7 +17,7 @@ namespace drv {
         dev.write = [](uint8_t reg_addr, const uint8_t* writeData, uint32_t len, void* pthis) -> BMP3_INTF_RET_TYPE {
             auto* _this = reinterpret_cast<bmp*>(pthis);
 
-            _this->i2c.write(_this->addr, reg_addr, writeData, len, true);
+            _this->i2c.write(_this->addr, reg_addr, writeData, len);
 
             return BMP3_INTF_RET_SUCCESS;
         };

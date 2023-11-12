@@ -59,6 +59,12 @@ namespace entry {
             //HAL_UART_Transmit_DMA(&huart8, reinterpret_cast<const uint8_t *>(msg.c_str()), msg.size());
         }
 
+        if (sensor::bmmData.hasNew()) {
+            auto r = sensor::bmmData.get().value();
+
+            log("magnetic vector:\t" + std::to_string(r.x) + "\t" + std::to_string(r.y) + "\t" + std::to_string(r.z) + "\n");
+        }
+
 
         //log("main loop took " + std::to_string((xTaskGetTickCount() - mainLastWakeTime)/(float)frequency) + " time to run\n");
 
