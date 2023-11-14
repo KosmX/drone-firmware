@@ -9,7 +9,7 @@
 // includes
 #include "i2c.h"
 
-#include "os/led.h"
+#include "os/gpin.h"
 #include "os/os_i2c.h"
 #include "driver/bmp.h"
 #include "driver/bmm.h"
@@ -18,7 +18,7 @@ namespace dev {
 
 // direct comms (bus etc)
 
-    extern os::led pcb_led;
+    extern os::gpin pcb_led;
     extern os::i2c* i2c1;
 
 // devices

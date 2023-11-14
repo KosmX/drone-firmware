@@ -6,7 +6,7 @@
 
 namespace dev {
 
-    os::led pcb_led{LED_D1_GPIO_Port, LED_D1_Pin};
+    os::gpin pcb_led{LED_D1_GPIO_Port, LED_D1_Pin};
     os::i2c* i2c1 = nullptr;
     drv::bmp* bmp = nullptr;
     drv::bmm* bmm = nullptr;
