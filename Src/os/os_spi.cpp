@@ -8,7 +8,7 @@
 
 namespace os {
 
-    std::vector<std::pair<SPI_HandleTypeDef *, spi*>> instances{};
+    std::vector<std::pair<SPI_HandleTypeDef *, spi*>> spi_instances{};
 
 
     spi::spi(SPI_HandleTypeDef *spi, gpin *defaultNss) :
@@ -43,14 +43,14 @@ namespace os {
     }
 
     spi *spi::getFor(SPI_HandleTypeDef *hspi, gpin *defaultNss) {
-        auto entry = std::find_if(instances.cbegin(), instances.cend(), [=](auto& it) -> bool{
+        auto entry = std::find_if(spi_instances.cbegin(), spi_instances.cend(), [=](auto& it) -> bool{
             return it.first == hspi;
         });
-        if (entry != instances.cend()) {
+        if (entry != spi_instances.cend()) {
             return entry->second;
         }
-        instances.push_back(std::pair(hspi, new spi(hspi, defaultNss)));
-        return (instances[instances.size() - 1]).second;
+        spi_instances.push_back(std::pair(hspi, new spi(hspi, defaultNss)));
+        return (spi_instances[spi_instances.size() - 1]).second;
     }
 
     HAL_StatusTypeDef spi::receive(uint8_t *readData, uint32_t len, gpin *nss) {

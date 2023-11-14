@@ -8,6 +8,7 @@
 
 #include "os/os_spi.h"
 #include "bmi088_mm.h"
+#include <utility>
 
 namespace drv {
 
@@ -21,7 +22,13 @@ namespace drv {
         os::gpin nAccel;
 
     public:
-        bmi(os::spi& spi, os::gpin& nGyro, os::gpin& nAccel);
+        bmi(os::spi& spi, os::gpin nGyro, os::gpin nAccel);
+
+        /**
+         *
+         * @return {acceleration, angular velocity}
+         */
+        std::pair<struct bmi08_sensor_data, struct bmi08_sensor_data> getData();
     };
 
 } // drv

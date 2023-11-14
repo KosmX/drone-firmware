@@ -9,7 +9,7 @@
 
 namespace os {
 
-    std::vector<std::pair<I2C_HandleTypeDef*, i2c*>> instances{};
+    std::vector<std::pair<I2C_HandleTypeDef*, i2c*>> i2c_instances{};
 
     i2c::i2c(I2C_HandleTypeDef *i2c) :
             hi2c{i2c},
@@ -19,7 +19,7 @@ namespace os {
         //xSemaphoreGive(readSemaphore); // taken by default
         //xSemaphoreGive(writeSemaphore);
 
-        if( std::any_of(instances.cbegin(), instances.cend(), [=](auto& other){return other.first == i2c;})) {
+        if( std::any_of(i2c_instances.cbegin(), i2c_instances.cend(), [=](auto& other){return other.first == i2c;})) {
             // error?
             throw "Multiple inits for the same singleton";
         }
@@ -73,14 +73,14 @@ namespace os {
     // This is only thread-safe if no-one is creating new
     i2c* i2c::getFor(I2C_HandleTypeDef *i2c) {
 
-        auto entry = std::find_if(instances.cbegin(), instances.cend(), [=](auto& it) -> bool{
+        auto entry = std::find_if(i2c_instances.cbegin(), i2c_instances.cend(), [=](auto& it) -> bool{
             return it.first == i2c;
         });
-        if (entry != instances.cend()) {
+        if (entry != i2c_instances.cend()) {
             return entry->second;
         }
-        instances.push_back(std::pair(i2c, new class i2c(i2c)));
-        return (instances[instances.size() - 1]).second;
+        i2c_instances.push_back(std::pair(i2c, new class i2c(i2c)));
+        return (i2c_instances[i2c_instances.size() - 1]).second;
     }
 
 } // os

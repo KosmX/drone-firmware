@@ -10,7 +10,7 @@
 #include "devices.h"
 #include "task.h"
 #include "timers.h"
-#include "sensor/i2c_data.h"
+#include "sensor/builtin_sensor_data.h"
 
 
 
@@ -38,7 +38,7 @@ namespace entry {
 
 
         init_tasks(); // Start task threads
-        sensor::i2c_init();
+        sensor::sensors_init();
 
         mainLastWakeTime = xTaskGetTickCount();
     }
@@ -65,6 +65,14 @@ namespace entry {
             log("magnetic vector:\t" + std::to_string(r.x) + "\t" + std::to_string(r.y) + "\t" + std::to_string(r.z) + "\n");
         }
 
+        {
+            auto r = dev::bmi->getData();
+            auto& a = r.first;
+            auto& g = r.second;
+
+            log("accel:\t" + std::to_string(a.x) + "\t" + std::to_string(a.y) + "\t" + std::to_string(a.z) + "\n");
+            log("gyro:\t" + std::to_string(g.x) + "\t" + std::to_string(g.y) + "\t" + std::to_string(g.z) + "\n");
+        }
 
         //log("main loop took " + std::to_string((xTaskGetTickCount() - mainLastWakeTime)/(float)frequency) + " time to run\n");
 

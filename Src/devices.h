@@ -13,6 +13,8 @@
 #include "os/os_i2c.h"
 #include "driver/bmp.h"
 #include "driver/bmm.h"
+#include "os/os_spi.h"
+#include "driver/bmi.h"
 
 namespace dev {
 
@@ -20,11 +22,13 @@ namespace dev {
 
     extern os::gpin pcb_led;
     extern os::i2c* i2c1;
+    extern os::spi* spi;
 
 // devices
 
     extern drv::bmp* bmp;
     extern drv::bmm* bmm;
+    extern drv::bmi* bmi;
 
 // init function (call after OS is ready)
     void init();
