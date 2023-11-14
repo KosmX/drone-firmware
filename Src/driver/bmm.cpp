@@ -35,7 +35,7 @@ namespace drv {
             Error_Handler();
         }
 
-        settings.pwr_mode = BMM150_POWERMODE_SLEEP; // sensor will be used in forced mode to reach 50 hz odr
+        settings.pwr_mode = BMM150_POWERMODE_FORCED; // sensor will be used in forced mode to reach 50 hz odr
 
         settings.preset_mode = BMM150_PRESETMODE_ENHANCED; //max ODR in forced mode: 60, targeting 50
         bmm150_set_presetmode(&settings, &dev);
