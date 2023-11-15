@@ -34,6 +34,9 @@ namespace entry {
     void init() {
         // Init after os start
 
+        // first, init telemetry
+        tlm::ITelemetry::INSTANCE = new tlm::UartTelemetry(huart8); // send telemetry to UART
+
         dev::init(); // init devices
 
 
