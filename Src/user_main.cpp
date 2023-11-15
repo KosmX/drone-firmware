@@ -22,6 +22,7 @@ namespace entry {
 
 
     extern "C" void StartDefaultTask(void *argument) {
+        vTaskDelay(2000);
         init();
 
         //*
@@ -58,14 +59,14 @@ namespace entry {
             auto r = sensor::bmpData.get().value(); // just make it shorter
 
             //sprintf(msg.get(), "pressure: %f, temp: %f\n", r.first, r.second);
-            log("pressure: " + std::to_string(r.first) + ", temp: " + std::to_string(r.second) + "\n");
+            //log("pressure: " + std::to_string(r.first) + ", temp: " + std::to_string(r.second) + "\n");
             //HAL_UART_Transmit_DMA(&huart8, reinterpret_cast<const uint8_t *>(msg.c_str()), msg.size());
         }
 
         if (sensor::bmmData.hasNew()) {
             auto r = sensor::bmmData.get().value();
 
-            log("magnetic vector:\t" + std::to_string(r.x) + "\t" + std::to_string(r.y) + "\t" + std::to_string(r.z) + "\n");
+            //log("magnetic vector:\t" + std::to_string(r.x) + "\t" + std::to_string(r.y) + "\t" + std::to_string(r.z) + "\n");
         }
 
         {
@@ -74,7 +75,7 @@ namespace entry {
             auto& g = r.second;
 
             log("accel:\t" + std::to_string(a.x) + "\t" + std::to_string(a.y) + "\t" + std::to_string(a.z) + "\n");
-            log("gyro:\t" + std::to_string(g.x) + "\t" + std::to_string(g.y) + "\t" + std::to_string(g.z) + "\n");
+            //log("gyro:\t" + std::to_string(g.x) + "\t" + std::to_string(g.y) + "\t" + std::to_string(g.z) + "\n");
         }
 
         //log("main loop took " + std::to_string((xTaskGetTickCount() - mainLastWakeTime)/(float)frequency) + " time to run\n");

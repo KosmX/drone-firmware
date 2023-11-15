@@ -165,7 +165,7 @@
 #define BMI08_REG_ACCEL_GP_4                    UINT8_C(0x27)
 
 /**\name    Accel Internal status register */
-#define BMI08_REG_ACCEL_INTERNAL_STAT           UINT8_C(0x2A)
+#define BMI08_REG_ACCEL_INTERNAL_STAT           UINT8_C(0x2A) /* UNDOCUMENTED */
 
 /**\name    Accel configuration register */
 #define BMI08_REG_ACCEL_CONF                    UINT8_C(0x40)
