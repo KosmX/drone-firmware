@@ -11,7 +11,7 @@ namespace drv {
     static void enable_bmi08_data_synchronization_interrupt(struct bmi08_dev *bmi08dev)
     {
         int8_t rslt;
-        struct bmi08_int_cfg int_config;
+        struct bmi08_int_cfg int_config{};
 
         /* Set accel interrupt pin configuration */
         /* Configure host data ready interrupt */
@@ -35,11 +35,7 @@ namespace drv {
         int_config.gyro_int_config_1.int_pin_cfg.lvl = BMI08_INT_ACTIVE_HIGH;
         int_config.gyro_int_config_1.int_pin_cfg.output_mode = BMI08_INT_MODE_PUSH_PULL;
 
-#if defined(MCU_APP20)
-        int_config.gyro_int_config_2.int_channel = BMI08_INT_CHANNEL_4;
-#elif defined(MCU_APP30)
         int_config.gyro_int_config_2.int_channel = BMI08_INT_CHANNEL_3;
-#endif
         int_config.gyro_int_config_2.int_type = BMI08_GYRO_INT_DATA_RDY;
         int_config.gyro_int_config_2.int_pin_cfg.enable_int_pin = BMI08_DISABLE;
         int_config.gyro_int_config_2.int_pin_cfg.lvl = BMI08_INT_ACTIVE_HIGH;
@@ -67,7 +63,7 @@ namespace drv {
         dev.intf_ptr_accel = new std::pair<bmi*, bool>(this, true);
 
         dev.delay_us = [](uint32_t period, void *_this) {
-            vTaskDelay(pdMS_TO_TICKS(period)); // no active waiting
+            vTaskDelay(pdMS_TO_TICKS(((period + 999)/1000))); // no active waiting
         };
 
         dev.write = [](uint8_t reg_addr, const uint8_t *writeData, uint32_t len, void *pthis) -> BMI08_INTF_RET_TYPE {

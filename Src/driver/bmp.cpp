@@ -11,7 +11,7 @@ namespace drv {
 
 
         dev.delay_us = [](uint32_t period, void* _this){
-            vTaskDelay(pdMS_TO_TICKS(period)); // no active waiting
+            vTaskDelay(pdMS_TO_TICKS((period + 999)/1000)); // no active waiting
         };
 
         dev.write = [](uint8_t reg_addr, const uint8_t* writeData, uint32_t len, void* pthis) -> BMP3_INTF_RET_TYPE {

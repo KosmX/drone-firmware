@@ -10,7 +10,7 @@ namespace drv {
     bmm::bmm(os::i2c &i2c, uint8_t devaddr) : dev{0, BMM150_I2C_INTF, this}, settings{}, i2c{i2c},
                                                    addr{static_cast<uint8_t>(devaddr << 1)} {
         dev.delay_us = [](uint32_t period, void *_this) {
-            vTaskDelay(pdMS_TO_TICKS(period)); // no active waiting
+            vTaskDelay(pdMS_TO_TICKS(((period + 999)/1000))); // no active waiting
         };
 
         dev.write = [](uint8_t reg_addr, const uint8_t *writeData, uint32_t len, void *pthis) -> BMM150_INTF_RET_TYPE {
