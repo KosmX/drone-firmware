@@ -124,18 +124,17 @@ namespace drv {
 
         /*API uploads the bmi08 config file onto the device*/
         if (rslt == BMI08_OK) {
-            if (rslt == BMI08_OK) {
 
-                /* Wait for 150ms to enable the data synchronization --delay taken care inside the function */
-                dev.accel_cfg.range = BMI088_MM_ACCEL_RANGE_24G;
+            /* Wait for 150ms to enable the data synchronization --delay taken care inside the function */
+            dev.accel_cfg.range = BMI088_MM_ACCEL_RANGE_24G;
 
-                /* Assign gyro range setting*/
-                dev.gyro_cfg.range = BMI08_GYRO_RANGE_2000_DPS;
+            /* Assign gyro range setting*/
+            dev.gyro_cfg.range = BMI08_GYRO_RANGE_2000_DPS;
 
-                /*! Mode (0 = off, 1 = 400Hz, 2 = 1kHz, 3 = 2kHz) */
-                syncCfg.mode = BMI08_ACCEL_DATA_SYNC_MODE_1000HZ;
-                rslt = bmi08xa_configure_data_synchronization(syncCfg, &dev);
-            }
+            /*! Mode (0 = off, 1 = 400Hz, 2 = 1kHz, 3 = 2kHz) */
+            syncCfg.mode = BMI08_ACCEL_DATA_SYNC_MODE_1000HZ;
+            rslt = bmi08xa_configure_data_synchronization(syncCfg, &dev);
+
         }
 
         if (rslt == BMI08_OK)
