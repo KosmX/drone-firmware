@@ -8,6 +8,7 @@
 
 namespace crsf {
 
+    void init();
 }
 
 #endif //__cplusplus

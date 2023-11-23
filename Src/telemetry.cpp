@@ -52,7 +52,7 @@ tlm::UartTelemetry::UartTelemetry(UART_HandleTypeDef& huart): queueHandle{xQueue
 
         if (str != nullptr) {
             xSemaphoreTake(uartSemaphore, portMAX_DELAY); // take the UART for transmit, interrupt will set it free once transmit is complete
-            HAL_UART_Transmit_DMA(&uart, reinterpret_cast<const uint8_t *>(str->c_str()), str->size());
+            HAL_UART_Transmit_IT(&uart, reinterpret_cast<const uint8_t *>(str->c_str()), str->size());
 
             // UART transmit has been started, but we'll need our data back
 
