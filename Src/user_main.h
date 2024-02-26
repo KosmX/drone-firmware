@@ -7,13 +7,15 @@
 
 #ifdef __cplusplus
 
+namespace entry {
 
 /**
  * Real-time thread loop
  */
-void rtLoop();
-void init();
+    void rtLoop();
 
+    void init();
+}
 // C functions
 
 extern "C" {

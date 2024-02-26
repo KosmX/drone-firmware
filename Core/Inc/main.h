@@ -59,8 +59,14 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define SPI3_sNSS_Pin GPIO_PIN_13
 #define SPI3_sNSS_GPIO_Port GPIOC
+#define NSS_ACCEL_Pin GPIO_PIN_4
+#define NSS_ACCEL_GPIO_Port GPIOA
+#define NSS_GYRO_Pin GPIO_PIN_4
+#define NSS_GYRO_GPIO_Port GPIOC
 #define EXTRA_PB2_Pin GPIO_PIN_2
 #define EXTRA_PB2_GPIO_Port GPIOB
+#define LED_D1_Pin GPIO_PIN_10
+#define LED_D1_GPIO_Port GPIOE
 
 /* USER CODE BEGIN Private defines */
 

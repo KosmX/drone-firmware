@@ -21,6 +21,8 @@
 #include "cmsis_os.h"
 #include "adc.h"
 #include "can.h"
+#include "dma.h"
+#include "i2c.h"
 #include "spi.h"
 #include "usart.h"
 #include "usb_otg.h"
@@ -92,6 +94,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_ADC1_Init();
   MX_CAN1_Init();
   MX_SPI2_Init();
@@ -101,6 +104,8 @@ int main(void)
   MX_USB_OTG_FS_USB_Init();
   MX_UART8_Init();
   MX_UART7_Init();
+  MX_I2C1_Init();
+  MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
   preInit();
   /* USER CODE END 2 */
@@ -203,9 +208,11 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-  __disable_irq();
+  //__disable_irq();
   while (1)
   {
+      // allow other threads (logger)
+      vTaskDelay(50);
   }
   /* USER CODE END Error_Handler_Debug */
 }
