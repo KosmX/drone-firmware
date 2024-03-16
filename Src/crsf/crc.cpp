@@ -20,6 +20,7 @@ uint8_t GENERIC_CRC8::calc(const uint8_t data)
     return crc8tab[data];
 }
 
+/*
 uint8_t GENERIC_CRC8::calc(const uint8_t *data, uint16_t len, uint8_t crc)
 {
     while (len--)
@@ -27,7 +28,7 @@ uint8_t GENERIC_CRC8::calc(const uint8_t *data, uint16_t len, uint8_t crc)
         crc = crc8tab[crc ^ *data++];
     }
     return crc;
-}
+}*/
 
 void Crc2Byte::init(uint8_t bits, uint16_t poly)
 {
