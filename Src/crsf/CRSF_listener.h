@@ -8,8 +8,11 @@
 
 namespace crsf {
 
-    class Packet {
-
+    class PacketConfig {
+        // describe what to do with specific packet
+    public:
+        const char packetId;
+        const bool isExtended;
     };
 }
 
