@@ -169,7 +169,7 @@ typedef struct crsf_header_s
 #define CRSF_MK_FRAME_T(payload) struct payload##_frame_s { crsf_header_t h; payload p; uint8_t crc; } PACKED
 
 // Used by extended header frames (type in range 0x28 to 0x96)
-typedef struct crsf_ext_header_s
+typedef struct crsf_ext_header_sg
 {
     // Common header fields, see crsf_header_t
     uint8_t device_addr;

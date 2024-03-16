@@ -1,13 +1,13 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file    usart.h
+  * @file    tim.h
   * @brief   This file contains all the function prototypes for
-  *          the usart.c file
+  *          the tim.c file
   ******************************************************************************
   * @attention
   *
-  * Copyright (c) 2023 STMicroelectronics.
+  * Copyright (c) 2024 STMicroelectronics.
   * All rights reserved.
   *
   * This software is licensed under terms that can be found in the LICENSE file
@@ -18,8 +18,8 @@
   */
 /* USER CODE END Header */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __USART_H__
-#define __USART_H__
+#ifndef __TIM_H__
+#define __TIM_H__
 
 #ifdef __cplusplus
 extern "C" {
@@ -32,28 +32,18 @@ extern "C" {
 
 /* USER CODE END Includes */
 
-extern UART_HandleTypeDef huart7;
+extern TIM_HandleTypeDef htim2;
 
-extern UART_HandleTypeDef huart8;
-
-extern UART_HandleTypeDef huart10;
-
-extern UART_HandleTypeDef huart1;
-
-extern USART_HandleTypeDef husart2;
-
-extern USART_HandleTypeDef husart6;
+extern TIM_HandleTypeDef htim5;
 
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
 
-void MX_UART7_Init(void);
-void MX_UART8_Init(void);
-void MX_UART10_Init(void);
-void MX_USART1_UART_Init(void);
-void MX_USART2_Init(void);
-void MX_USART6_Init(void);
+void MX_TIM2_Init(void);
+void MX_TIM5_Init(void);
+
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 
 /* USER CODE BEGIN Prototypes */
 
@@ -63,5 +53,5 @@ void MX_USART6_Init(void);
 }
 #endif
 
-#endif /* __USART_H__ */
+#endif /* __TIM_H__ */
 

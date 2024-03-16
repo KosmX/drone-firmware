@@ -8,6 +8,9 @@
 
 namespace crsf {
 
+    class Packet {
+
+    };
 }
 
 #endif //__cplusplus
