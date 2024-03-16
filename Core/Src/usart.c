@@ -315,7 +315,7 @@ void HAL_UART_MspInit(UART_HandleTypeDef* uartHandle)
     hdma_uart10_rx.Init.MemInc = DMA_MINC_ENABLE;
     hdma_uart10_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
     hdma_uart10_rx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
-    hdma_uart10_rx.Init.Mode = DMA_NORMAL;
+    hdma_uart10_rx.Init.Mode = DMA_CIRCULAR;
     hdma_uart10_rx.Init.Priority = DMA_PRIORITY_LOW;
     hdma_uart10_rx.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
     if (HAL_DMA_Init(&hdma_uart10_rx) != HAL_OK)
