@@ -20,7 +20,7 @@ osThreadId_t telemetryTaskHandle;
 const osThreadAttr_t telemetry_attr = {
         .name = "telemetry",
         .stack_size = 128 * 4,
-        .priority = (osPriority_t) osPriorityRealtime,
+        .priority = (osPriority_t) osPriorityBelowNormal,
 };
 
 tlm::UartTelemetry::UartTelemetry(UART_HandleTypeDef& huart): queueHandle{xQueueCreate(8, sizeof(void*))}, uart{huart} {
@@ -85,6 +85,6 @@ void log(std::string&& msg) {
     log(std::make_unique<std::string>(msg)); // rvalue, move ctor
 }
 
-void tlm::DummyTelemetry::log(std::unique_ptr<std::string> &&str) {
+void tlm::DummyTelemetry::log(std::unique_ptr<std::string>&& str) {
     std::unique_ptr<std::string> s = std::move(str); // placeholder to make sure unique_ptr will be deleted (this is still not Rust)
 }

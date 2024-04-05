@@ -2,7 +2,7 @@
 
 #include <cstdint>
 #include <cmath>
-#include "crc.h"
+//#include "crc.h"
 
 #ifdef __cplusplus
 
@@ -32,13 +32,13 @@
 #define BattSensorFrameLength 8      //
 #define VTXcontrolFrameLength 12     //
 
-#define CRSF_PAYLOAD_SIZE_MAX 62
-#define CRSF_FRAME_NOT_COUNTED_BYTES 2
-#define CRSF_FRAME_SIZE(payload_size) ((payload_size) + 2) // See crsf_header_t.frame_size
+const constexpr size_t CRSF_PAYLOAD_SIZE_MAX = 62;
+const constexpr size_t CRSF_FRAME_NOT_COUNTED_BYTES = 2;
+constexpr size_t CRSF_FRAME_SIZE(size_t payload_size) {return payload_size + 2;} // See crsf_header_t.frame_size
 #define CRSF_EXT_FRAME_SIZE(payload_size) (CRSF_FRAME_SIZE(payload_size) + 2)
 #define CRSF_FRAME_SIZE_MAX (CRSF_PAYLOAD_SIZE_MAX + CRSF_FRAME_NOT_COUNTED_BYTES)
-#define CRSF_FRAME_CRC_SIZE 1
-#define CRSF_FRAME_LENGTH_EXT_TYPE_CRC 4 // length of Extended Dest/Origin, TYPE and CRC fields combined
+const constexpr size_t CRSF_FRAME_CRC_SIZE = 1;
+const constexpr size_t CRSF_FRAME_LENGTH_EXT_TYPE_CRC = 4; // length of Extended Dest/Origin, TYPE and CRC fields combined
 
 #define CRSF_TELEMETRY_LENGTH_INDEX 1
 #define CRSF_TELEMETRY_TYPE_INDEX 2

@@ -25,7 +25,7 @@ namespace os {
 
     uart_dma::uart_dma(UART_HandleTypeDef *huart, size_t bufSize):
         huart{huart},
-        readSemaphore{xSemaphoreCreateBinary()},
+        //readSemaphore{xSemaphoreCreateBinary()},
         writeSemaphore{xSemaphoreCreateBinary()},
         readMutex(),
         writeMutex(),
@@ -97,7 +97,7 @@ namespace os {
     startPos{pos},
     dataSize{data_size} {}
 
-    char RingBufferEntryPtr::operator*() {
+    char RingBufferEntryPtr::operator*() const {
         if (pos - startPos < dataSize) {
             return buffer[pos & sizeMask];
         } else {
@@ -105,7 +105,7 @@ namespace os {
         }
     }
 
-    uint8_t RingBufferEntryPtr::operator[](size_t pos) {
+    uint8_t RingBufferEntryPtr::operator[](size_t pos) const {
         if (this->pos - startPos + pos < dataSize) {
             return buffer[(this->pos + pos) & sizeMask];
         } else {
@@ -137,6 +137,16 @@ namespace os {
 
     bool RingBufferEntryPtr::hasNext() const {
         return pos - startPos + 1 < dataSize;
+    }
+
+    RingBufferEntryPtr RingBufferEntryPtr::operator+(size_t increment) const {
+        RingBufferEntryPtr p(*this);
+        p.pos += increment;
+        return p;
+    }
+
+    RingBufferEntryPtr RingBufferEntryPtr::operator-(size_t increment) const {
+        return *this + -increment; //
     }
 
 } // os

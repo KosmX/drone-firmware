@@ -13,6 +13,7 @@ namespace dev {
     drv::bmm* bmm = nullptr;
     drv::bmi* bmi = nullptr;
 
+
     void init() {
         i2c1 = os::i2c::getFor(&hi2c1);
         spi = os::spi::getFor(&hspi1);

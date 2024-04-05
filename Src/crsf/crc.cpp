@@ -1,6 +1,6 @@
 #include "crsf/crc.h"
 
-GENERIC_CRC8::GENERIC_CRC8(uint8_t poly)
+constexpr GenericCRC8::GenericCRC8(uint8_t poly)
 {
     uint8_t crc;
 
@@ -15,13 +15,16 @@ GENERIC_CRC8::GENERIC_CRC8(uint8_t poly)
     }
 }
 
-uint8_t GENERIC_CRC8::calc(const uint8_t data)
+uint8_t GenericCRC8::calc(const uint8_t data) const
 {
     return crc8tab[data];
 }
 
+// Calculate LUT on PC, upload it to MCU
+constexpr const GenericCRC8 GenericCRC8::PolyD5{0xd5};
+
 /*
-uint8_t GENERIC_CRC8::calc(const uint8_t *data, uint16_t len, uint8_t crc)
+uint8_t GenericCRC8::calc(const uint8_t *data, uint16_t len, uint8_t crc)
 {
     while (len--)
     {
@@ -30,8 +33,7 @@ uint8_t GENERIC_CRC8::calc(const uint8_t *data, uint16_t len, uint8_t crc)
     return crc;
 }*/
 
-void Crc2Byte::init(uint8_t bits, uint16_t poly)
-{
+constexpr Crc2Byte::Crc2Byte(uint8_t bits, uint16_t poly): _crctab{} {
     if (bits == _bits && poly == _poly)
         return;
     _poly = poly;

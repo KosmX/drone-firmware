@@ -33,10 +33,11 @@ namespace os {
         RingBufferEntryPtr(const RingBufferEntryPtr& other) = default; // Default copy ctor
 
 
-        uint8_t operator[](size_t pos);
+        uint8_t operator[](size_t pos) const;
 
-        char operator*();
-        //RingBufferEntryPtr operator+(size_t increment) const;
+        char operator*() const;
+        RingBufferEntryPtr operator+(size_t increment) const;
+        RingBufferEntryPtr operator-(size_t increment) const;
         RingBufferEntryPtr& operator++(); // pre increment
         RingBufferEntryPtr operator++(int); // post increment
         RingBufferEntryPtr& operator--(); // pre increment
