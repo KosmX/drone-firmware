@@ -8,6 +8,10 @@
 #include <memory>
 #include <vector>
 
+/**
+ * Config entry definitions
+ */
+
 namespace cfg {
 
     extern std::vector<std::unique_ptr<ConfigEntry>> cfg;

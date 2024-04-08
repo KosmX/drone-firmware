@@ -7,7 +7,7 @@
 #include <memory>
 #include <utility>
 #include "ConfigResponseBuilder.h"
-#include "ConfigWriter.h"
+#include "ConfigUpdatePacket.h"
 #include <limits>
 
 namespace cfg {
@@ -26,9 +26,18 @@ namespace cfg {
     public:
         [[nodiscard]] const std::string& getName() const;
 
-        virtual void write(ConfigResponseBuilder &writer) const = 0;
+        /**
+         * Create a reply message
+         * @param buf Message buffer
+         */
+        virtual void write(ConfigResponseBuilder &buf) const = 0;
 
-        virtual void read(ConfigWriter& reader) = 0;
+        /**
+         * Containing new config data.
+         * This should update the config entry
+         * @param buf
+         */
+        virtual void read(ConfigUpdatePacket& buf) = 0;
 
 
     };
@@ -46,8 +55,8 @@ namespace cfg {
 
         [[nodiscard]] uint8_t get() const;
 
-        void read(cfg::ConfigWriter &writer) override;
-        void write(cfg::ConfigResponseBuilder &writer) const override;
+        void read(cfg::ConfigUpdatePacket&) override;
+        void write(cfg::ConfigResponseBuilder&) const override;
     };
 
     class BoolConfig : public Uint8Entry {

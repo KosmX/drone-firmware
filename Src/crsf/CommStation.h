@@ -8,6 +8,7 @@
 #include <os/uart_dma.h>
 #include "cmsis_os2.h"
 #include "os/mutex_wapper.h"
+#include <tl/RingBuffer.h>
 
 /**
  * Communication interface for controller
@@ -31,16 +32,22 @@ namespace crsf {
 
 
         osThreadId_t handleThread;
+        osThreadId_t sendThread;
 
         [[noreturn]] void runThread();
 
-        // TODO
-        //packet queue
+        tl::RingBuffer<uint8_t[64]> buf{8};
 
     public:
+
+        struct MessageEntry {
+            uint8_t data[64] = {0};
+        };
         explicit ELRSController(os::uart_dma& uart);
 
         bool isControllerPresent() const override;
+
+
 
 
     };
