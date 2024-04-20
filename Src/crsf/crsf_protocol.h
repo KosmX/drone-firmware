@@ -35,7 +35,7 @@
 const constexpr size_t CRSF_PAYLOAD_SIZE_MAX = 62;
 const constexpr size_t CRSF_FRAME_NOT_COUNTED_BYTES = 2;
 constexpr size_t CRSF_FRAME_SIZE(size_t payload_size) {return payload_size + 2;} // See crsf_header_t.frame_size
-#define CRSF_EXT_FRAME_SIZE(payload_size) (CRSF_FRAME_SIZE(payload_size) + 2)
+constexpr size_t CRSF_EXT_FRAME_SIZE(size_t payload_size) {return CRSF_FRAME_SIZE(payload_size) + 2;}
 #define CRSF_FRAME_SIZE_MAX (CRSF_PAYLOAD_SIZE_MAX + CRSF_FRAME_NOT_COUNTED_BYTES)
 const constexpr size_t CRSF_FRAME_CRC_SIZE = 1;
 const constexpr size_t CRSF_FRAME_LENGTH_EXT_TYPE_CRC = 4; // length of Extended Dest/Origin, TYPE and CRC fields combined
@@ -81,7 +81,7 @@ typedef enum
     // MSP commands
     CRSF_FRAMETYPE_MSP_REQ = 0x7A,   // response request using msp sequence as command
     CRSF_FRAMETYPE_MSP_RESP = 0x7B,  // reply with 58 byte chunked binary
-    CRSF_FRAMETYPE_MSP_WRITE = 0x7C, // write with 8 byte chunked binary (OpenTX outbound telemetry buffer limit)
+    CRSF_FRAMETYPE_MSP_WRITE = 0x7C, // updateConfigFrom with 8 byte chunked binary (OpenTX outbound telemetry buffer limit)
     // Ardupilot frames
     CRSF_FRAMETYPE_ARDUPILOT_RESP = 0x80,
 } crsf_frame_type_e;

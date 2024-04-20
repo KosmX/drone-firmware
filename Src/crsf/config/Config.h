@@ -14,7 +14,12 @@
 
 namespace cfg {
 
-    extern std::vector<std::unique_ptr<ConfigEntry>> cfg;
+    extern BoolConfig armed;
+
+    // must be set to true when disarming in-flight
+    extern BoolConfig disarmSafety;
+
+    extern std::vector<ConfigEntry*> cfg;
 
     
 } // cfg

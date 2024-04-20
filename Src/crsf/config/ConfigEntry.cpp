@@ -3,19 +3,41 @@
 
 #include "crsf/crsf_protocol.h"
 
-const std::string &cfg::ConfigEntry::getName() const {
-    return name;
-}
+namespace cfg {
 
-unsigned char cfg::Uint8Entry::getTypeID() const {
-    return crsf_value_type_e::CRSF_UINT8;
-}
+    const std::string &ConfigEntry::getName() const {
+        return name;
+    }
+
+    bool ConfigEntry::isHidden() const {
+        return hidden;
+    }
+
+    void ConfigEntry::setHidden(bool h) {
+        hidden = h;
+    }
 
 
-uint8_t cfg::Uint8Entry::get() const {
-    return v;
-}
+    unsigned char Uint8Entry::getTypeID() const {
+        return crsf_value_type_e::CRSF_UINT8;
+    }
 
-bool cfg::BoolConfig::get() const {
-    return Uint8Entry::get() != 0;
+
+    uint8_t Uint8Entry::get() const {
+        return v;
+    }
+
+    void Uint8Entry::read(ConfigResponseBuilder &reply) {
+        reply.writeByte(v);
+        reply.writeByte(min);
+        reply.writeByte(max);
+    }
+
+    void Uint8Entry::updateConfigFrom(ConfigResponseBuilder &) const {
+
+    }
+
+    bool BoolConfig::get() const {
+        return Uint8Entry::get() != 0;
+    }
 }

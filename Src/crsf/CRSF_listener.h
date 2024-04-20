@@ -12,8 +12,30 @@
 
 namespace crsf {
 
+    class TxPacket {
+        uint8_t* pData;
 
-    class Packet {
+    public:
+        TxPacket(const TxPacket&) = delete;
+        TxPacket& operator=(const TxPacket&) = delete;
+
+        explicit TxPacket(uint8_t* data);
+
+        void calcCRCAndSetPacketLength(size_t length);
+        [[nodiscard]] uint8_t getPacketType() const;
+        void setPacketType(uint8_t id);
+
+        void setExtDest(uint8_t);
+        void setExtSrc(uint8_t);
+        [[nodiscard]] bool isExtended() const;
+
+        [[nodiscard]] size_t getPacketOffset() const;
+        uint8_t* getDataPtr();
+        uint8_t* data();
+
+    };
+
+    class RxPacket {
         // describe what to do with specific packet
     public:
         [[nodiscard]] char getPacketId() const;
@@ -24,14 +46,14 @@ namespace crsf {
 
         const os::RingBufferEntryPtr pData;
 
-        explicit Packet(os::RingBufferEntryPtr pData);
+        explicit RxPacket(os::RingBufferEntryPtr pData);
 
         [[nodiscard]] uint8_t getCrc() const;
     };
 
-    // Packet handling will be a procedural switch case.
+    // RxPacket handling will be a procedural switch case.
     // OOP sucks for many reasons
-    typedef std::function<bool(const Packet& config)> HandlerFunction;
+    typedef std::function<bool(const RxPacket& config)> HandlerFunction;
 
     extern const std::map<crsf_frame_type_e, HandlerFunction> handlers;
 

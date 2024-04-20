@@ -5,4 +5,13 @@
 #include "Config.h"
 
 namespace cfg {
+
+    BoolConfig armed{"armed", false};
+    BoolConfig disarmSafety{"disarmSafety", false};
+
+
+    std::vector<ConfigEntry*> cfg{
+        &armed,
+        &disarmSafety,
+    };
 } // cfg

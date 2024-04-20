@@ -9,25 +9,25 @@
 
 namespace crsf {
 
-    Packet::Packet(os::RingBufferEntryPtr pData): pData(pData) {}
+    RxPacket::RxPacket(os::RingBufferEntryPtr pData): pData(pData) {}
 
-    size_t Packet::getLength() const {
+    size_t RxPacket::getLength() const {
         return pData[1];
     }
 
-    char Packet::getPacketId() const {
+    char RxPacket::getPacketId() const {
         return pData[2];
     }
 
-    os::RingBufferEntryPtr Packet::getDataPtr() const {
+    os::RingBufferEntryPtr RxPacket::getDataPtr() const {
         return isExtended() ? pData + 5 : pData + 3;
     }
 
-    bool Packet::isExtended() const {
+    bool RxPacket::isExtended() const {
         return getPacketId() >= 0x28;
     }
 
-    uint8_t Packet::getCrc() const {
+    uint8_t RxPacket::getCrc() const {
         return pData[getLength() + 1];
     }
 
@@ -36,7 +36,7 @@ namespace crsf {
      */
     const std::map<crsf_frame_type_e, HandlerFunction> handlers{
             {
-                crsf_frame_type_e::CRSF_FRAMETYPE_GPS, [](const Packet& config) -> bool {return false;},
+                crsf_frame_type_e::CRSF_FRAMETYPE_GPS, [](const RxPacket& config) -> bool {return false;},
             }
     };
 
@@ -47,7 +47,7 @@ namespace crsf {
             auto len = uart.peek(1);
             if (uart.available() < CRSF_FRAME_SIZE(len)) break; // not enough data yet
 
-            Packet conf{uart.read(CRSF_FRAME_SIZE(len))};
+            RxPacket conf{uart.read(CRSF_FRAME_SIZE(len))};
             // TODO verify CRC
 
             auto crc = GenericCRC8::PolyD5.calc((conf.pData + 2), conf.getLength() + 1);
@@ -64,4 +64,49 @@ namespace crsf {
         return packets;
     }
 
+    TxPacket::TxPacket(uint8_t *data): pData(data) {
+        pData[0] = 0x8c;
+
+    }
+
+    void TxPacket::calcCRCAndSetPacketLength(size_t length) {
+        size_t l = length;
+        if (isExtended()) l += 4;
+        else l += 2;
+        pData[1] = l;
+        auto crc = GenericCRC8::PolyD5.calc((pData + 2), length + 1);
+        pData[l - 1] = crc;
+    }
+
+    void TxPacket::setPacketType(uint8_t id) {
+        pData[2] = id;
+    }
+
+    void TxPacket::setExtDest(uint8_t d) {
+        pData[3] = d;
+    }
+
+    void TxPacket::setExtSrc(uint8_t s) {
+        pData[4] = s;
+    }
+
+    bool TxPacket::isExtended() const {
+        return getPacketType() >= 0x28;
+    }
+
+    uint8_t TxPacket::getPacketType() const {
+        return pData[2];
+    }
+
+    size_t TxPacket::getPacketOffset() const {
+        return isExtended() ? 5 : 3;
+    }
+
+    uint8_t *TxPacket::getDataPtr() {
+        return pData;
+    }
+
+    uint8_t *TxPacket::data() {
+        return pData + getPacketOffset();
+    }
 }
