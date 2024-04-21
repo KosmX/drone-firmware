@@ -27,14 +27,14 @@ namespace cfg {
         return v;
     }
 
-    void Uint8Entry::read(ConfigResponseBuilder &reply) {
+    void Uint8Entry::read(ConfigResponseBuilder &reply) const {
         reply.writeByte(v);
         reply.writeByte(min);
         reply.writeByte(max);
     }
 
-    void Uint8Entry::updateConfigFrom(ConfigResponseBuilder &) const {
-
+    void Uint8Entry::updateConfigFrom(ConfigUpdatePacket& packet) {
+        this->v = packet.data()[0];
     }
 
     bool BoolConfig::get() const {

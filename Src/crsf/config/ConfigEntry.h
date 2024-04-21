@@ -7,6 +7,7 @@
 #include <memory>
 #include <utility>
 #include "ConfigResponseBuilder.h"
+#include "ConfigUpdatePacket.h"
 #include <limits>
 
 namespace cfg {
@@ -34,14 +35,14 @@ namespace cfg {
          * Create a reply message
          * @param buf Message buffer
          */
-        virtual void updateConfigFrom(ConfigResponseBuilder &buf) const = 0;
+        virtual void updateConfigFrom(ConfigUpdatePacket& buf) = 0;
 
         /**
          * Containing new config data.
          * This should update the config entry
          * @param buf
          */
-        virtual void read(ConfigResponseBuilder& buf) = 0;
+        virtual void read(ConfigResponseBuilder& buf) const = 0;
 
 
     };
@@ -59,8 +60,8 @@ namespace cfg {
 
         [[nodiscard]] uint8_t get() const;
 
-        void read(cfg::ConfigResponseBuilder&) override;
-        void updateConfigFrom(ConfigResponseBuilder &) const override;
+        void read(cfg::ConfigResponseBuilder&) const override;
+        void updateConfigFrom(ConfigUpdatePacket &) override;
     };
 
     class BoolConfig : public Uint8Entry {

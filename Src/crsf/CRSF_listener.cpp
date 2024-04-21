@@ -19,7 +19,7 @@ namespace crsf {
         return pData[2];
     }
 
-    os::RingBufferEntryPtr RxPacket::getDataPtr() const {
+    os::RingBufferEntryPtr RxPacket::data() const {
         return isExtended() ? pData + 5 : pData + 3;
     }
 
@@ -29,6 +29,10 @@ namespace crsf {
 
     uint8_t RxPacket::getCrc() const {
         return pData[getLength() + 1];
+    }
+
+    os::RingBufferEntryPtr RxPacket::getDataPtr() const {
+        return pData;
     }
 
     /**

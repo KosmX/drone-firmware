@@ -40,6 +40,13 @@ namespace crsf {
     public:
         [[nodiscard]] char getPacketId() const;
         [[nodiscard]] size_t getLength() const;
+
+        /**
+         * Get data address
+         * @return calculated data, may be overwritten
+         */
+        [[nodiscard]] os::RingBufferEntryPtr data() const;
+
         [[nodiscard]] os::RingBufferEntryPtr getDataPtr() const;
 
         [[nodiscard]] bool isExtended() const;

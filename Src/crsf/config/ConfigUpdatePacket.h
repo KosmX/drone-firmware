@@ -13,15 +13,18 @@ namespace cfg {
     /**
      * crsf packet but with some extra functionality for generic config use
      */
-    class ConfigUpdatePacket : public crsf::Packet {
-    private:
+    class ConfigUpdatePacket : public crsf::RxPacket {
     public:
-        ConfigUpdatePacket(const crsf::Packet &packet) : crsf::Packet(packet) {
+        // actually implicit
+        ConfigUpdatePacket(const crsf::RxPacket &packet) : crsf::RxPacket(packet) {
             assert_param(isExtended());
         }
 
-        explicit ConfigUpdatePacket(const os::RingBufferEntryPtr& pData): crsf::Packet(pData) {}
+        explicit ConfigUpdatePacket(const os::RingBufferEntryPtr& pData): crsf::RxPacket(pData) {}
 
+        [[nodiscard]] uint8_t getFieldIndex() const;
+
+        [[nodiscard]] os::RingBufferEntryPtr data();
 
 
 
