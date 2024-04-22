@@ -52,6 +52,9 @@ namespace crsf {
 
         const std::map<crsf_frame_type_e, HandlerFunction> handlers;
 
+
+        int counter = 0;
+
         /**
          * BLOCKING
          * init ELRS connection

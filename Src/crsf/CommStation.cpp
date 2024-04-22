@@ -7,6 +7,7 @@
 #include "crc.h"
 #include "config/Config.h"
 #include "config/ConfigResponseBuilder.h"
+#include "Packets.h"
 
 
 CommStation* CommStation::INSTANCE = nullptr;
@@ -20,6 +21,7 @@ namespace crsf {
             .priority = (osPriority_t) osPriorityNormal,
     };
 
+    void pass(const RxPacket&) {}
 
     ELRSController::ELRSController(os::uart_dma &uart): uart(uart),
     handlers{
@@ -57,7 +59,10 @@ namespace crsf {
                     CRSF_FRAMETYPE_PARAMETER_WRITE, [&](const cfg::ConfigUpdatePacket &p) {
                 p.writeConfig();
             }
-            }
+            },
+            {
+                CRSF_FRAMETYPE_LINK_STATISTICS, pass
+            },
     }
     {
         handleThread = osThreadNew([](void* p) {
@@ -78,9 +83,7 @@ namespace crsf {
 
         while (true) {
 
-
-
-
+            checkForData();
             // delay before doing everything again
             vTaskDelayUntil(&lastWakeTime, frequency);
         }
@@ -107,6 +110,13 @@ namespace crsf {
             } catch (std::out_of_range& e) {
                 tlm::ITelemetry::INSTANCE->log(std::make_unique<std::string>("Unknown packet ID: " + std::to_string(conf.getPacketId())));
             }
+            packets++;
+        }
+        if (counter++ >= 50) {
+            counter = 0;
+            sendPacket([](TxPacket& p) {
+                HeartBeat::write(p);
+            });
         }
         return packets;
     }
