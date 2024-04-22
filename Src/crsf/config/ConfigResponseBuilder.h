@@ -15,10 +15,10 @@ namespace cfg {
         void operator=(const ConfigResponseBuilder&) = delete;
 
         // copy is disabled, however move is still possible
-        ConfigResponseBuilder(ConfigResponseBuilder&&) = default;
-        ConfigResponseBuilder& operator=(ConfigResponseBuilder&&) = default;
+        ConfigResponseBuilder(ConfigResponseBuilder&&) = delete;
+        ConfigResponseBuilder& operator=(ConfigResponseBuilder&&) = delete;
 
-        static ConfigResponseBuilder create(crsf::TxPacket& packet, int configId, int parentId, int packetPart = 0);
+        static void create(crsf::TxPacket& packet, int configId, int packetPart = 0);
     private:
         int idx = 0;
         size_t size = 0;

@@ -19,9 +19,10 @@ namespace cfg {
     private:
         const std::string name;
         bool hidden = false;
+        uint8_t parentId;
 
     protected:
-        explicit ConfigEntry(std::string name): name(std::move(name)) {}
+        explicit ConfigEntry(std::string name, uint8_t parentId = 0): name(std::move(name)) {}
 
 
     public:
@@ -35,7 +36,7 @@ namespace cfg {
          * Create a reply message
          * @param buf Message buffer
          */
-        virtual void updateConfigFrom(ConfigUpdatePacket& buf) = 0;
+        virtual void updateConfigFrom(const ConfigUpdatePacket& buf) = 0;
 
         /**
          * Containing new config data.
@@ -43,6 +44,8 @@ namespace cfg {
          * @param buf
          */
         virtual void read(ConfigResponseBuilder& buf) const = 0;
+
+        [[nodiscard]] uint8_t getParentId() const;
 
 
     };
@@ -61,7 +64,7 @@ namespace cfg {
         [[nodiscard]] uint8_t get() const;
 
         void read(cfg::ConfigResponseBuilder&) const override;
-        void updateConfigFrom(ConfigUpdatePacket &) override;
+        void updateConfigFrom(const ConfigUpdatePacket &) override;
     };
 
     class BoolConfig : public Uint8Entry {

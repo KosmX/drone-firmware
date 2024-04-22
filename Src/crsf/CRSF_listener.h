@@ -6,14 +6,15 @@
 #define STUFF_CRSF_LISTENER_H
 #ifdef __cplusplus
 #include <functional>
+#include <string>
 #include "os/uart_dma.h"
-#include "crsf/crsf_protocol.h" 
-#include <map>
+#include "crsf/crsf_protocol.h"
 
 namespace crsf {
 
     class TxPacket {
         uint8_t* pData;
+        size_t writeIdx = 0;
 
     public:
         TxPacket(const TxPacket&) = delete;
@@ -21,7 +22,16 @@ namespace crsf {
 
         explicit TxPacket(uint8_t* data);
 
+        /**
+         *
+         * @param length data length
+         */
         void calcCRCAndSetPacketLength(size_t length);
+
+        /**
+         * If packet was constructed with writeBytes, use the auto data length
+         */
+        void calcCRCAndSetPacketLength();
         [[nodiscard]] uint8_t getPacketType() const;
         void setPacketType(uint8_t id);
 
@@ -33,10 +43,21 @@ namespace crsf {
         uint8_t* getDataPtr();
         uint8_t* data();
 
+        void defaultRoute();
+
+        void writeByte(uint8_t byte);
+
+        void writeString(const std::string& str);
+
+        void writeBytes(const uint8_t *data, size_t len, bool prefixSize = false);
+
+        [[nodiscard]] size_t getWriteIndex() const;
     };
 
     class RxPacket {
         // describe what to do with specific packet
+    private:
+        mutable size_t readIdx = 0;
     public:
         [[nodiscard]] char getPacketId() const;
         [[nodiscard]] size_t getLength() const;
@@ -56,33 +77,9 @@ namespace crsf {
         explicit RxPacket(os::RingBufferEntryPtr pData);
 
         [[nodiscard]] uint8_t getCrc() const;
+
+        uint8_t readByte() const;
     };
-
-    // RxPacket handling will be a procedural switch case.
-    // OOP sucks for many reasons
-    typedef std::function<bool(const RxPacket& config)> HandlerFunction;
-
-    extern const std::map<crsf_frame_type_e, HandlerFunction> handlers;
-
-    /**
-     * BLOCKING
-     * init ELRS connection
-     * return when connection is active
-     */
-    void initComm();
-
-    /**
-     * Handle received data, including validation and processing
-     * @param pData volatile pointer to data. Its content is safe for processing, but is going to be invalid after handlePacket returns
-     */
-    void handlePacket(os::RingBufferEntryPtr pData);
-
-    /**
-     * Check for new data, and if there is any, handle it
-     * @param uart handler
-     * @return amount of packets handled
-     */
-    int checkForData(os::uart_dma& uart);
 }
 
 #endif //__cplusplus

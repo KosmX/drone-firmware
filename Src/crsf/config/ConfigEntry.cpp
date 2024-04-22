@@ -17,6 +17,10 @@ namespace cfg {
         hidden = h;
     }
 
+    uint8_t ConfigEntry::getParentId() const {
+        return parentId;
+    }
+
 
     unsigned char Uint8Entry::getTypeID() const {
         return crsf_value_type_e::CRSF_UINT8;
@@ -33,7 +37,7 @@ namespace cfg {
         reply.writeByte(max);
     }
 
-    void Uint8Entry::updateConfigFrom(ConfigUpdatePacket& packet) {
+    void Uint8Entry::updateConfigFrom(const ConfigUpdatePacket& packet) {
         this->v = packet.data()[0];
     }
 

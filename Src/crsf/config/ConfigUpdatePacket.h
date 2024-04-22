@@ -15,7 +15,7 @@ namespace cfg {
      */
     class ConfigUpdatePacket : public crsf::RxPacket {
     public:
-        // actually implicit
+        // actually implicit and being used that way
         ConfigUpdatePacket(const crsf::RxPacket &packet) : crsf::RxPacket(packet) {
             assert_param(isExtended());
         }
@@ -24,10 +24,9 @@ namespace cfg {
 
         [[nodiscard]] uint8_t getFieldIndex() const;
 
-        [[nodiscard]] os::RingBufferEntryPtr data();
+        [[nodiscard]] os::RingBufferEntryPtr data() const;
 
-
-
+        void writeConfig() const;
 
     };
 

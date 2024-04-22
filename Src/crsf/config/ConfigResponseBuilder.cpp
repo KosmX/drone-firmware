@@ -8,8 +8,8 @@
 #include <cmath>
 
 namespace cfg {
-    ConfigResponseBuilder ConfigResponseBuilder::create(crsf::TxPacket& pData, int configId, int parentId, int packetPart) {
-        ConfigResponseBuilder crb{pData, configId, configId, configId};
+    void ConfigResponseBuilder::create(crsf::TxPacket& pData, int configId, int packetPart) {
+        ConfigResponseBuilder crb{pData, configId, packetPart};
 
         auto& config = *cfg::cfg[configId];
 
@@ -19,8 +19,8 @@ namespace cfg {
 
         {
             crb.data.data()[0] = (configId);
-            crb.data.data()[0] = crb.writeByte(0);
-            crb.data.data()[0] = crb.writeByte(parentId);
+            crb.data.data()[1] = crb.writeByte(0);
+            crb.data.data()[2] = crb.writeByte(config.getParentId());
 
             crb.writeByte(config.getTypeID());
             crb.writeByte(config.isHidden());
@@ -36,8 +36,6 @@ namespace cfg {
 
         crb.data.calcCRCAndSetPacketLength(std::max(maxSize, crb.writePtr));
 
-
-        return crb;
     }
 
     bool ConfigResponseBuilder::writeByte(uint8_t byte) {

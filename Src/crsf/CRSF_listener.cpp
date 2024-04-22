@@ -35,37 +35,8 @@ namespace crsf {
         return pData;
     }
 
-    /**
-     * Small map, performance might be bad..
-     */
-    const std::map<crsf_frame_type_e, HandlerFunction> handlers{
-            {
-                crsf_frame_type_e::CRSF_FRAMETYPE_GPS, [](const RxPacket& config) -> bool {return false;},
-            }
-    };
-
-    int checkForData(os::uart_dma &uart) {
-        int packets = 0;
-
-        while (uart.available() >= 2) {
-            auto len = uart.peek(1);
-            if (uart.available() < CRSF_FRAME_SIZE(len)) break; // not enough data yet
-
-            RxPacket conf{uart.read(CRSF_FRAME_SIZE(len))};
-            // TODO verify CRC
-
-            auto crc = GenericCRC8::PolyD5.calc((conf.pData + 2), conf.getLength() + 1);
-            if (crc != conf.getCrc()) {
-                tlm::ITelemetry::INSTANCE->log(std::make_unique<std::string>("CRC doesn't match for packet"));
-            }
-
-            try {
-                handlers.at(static_cast<crsf_frame_type_e>(conf.getPacketId()))(conf);
-            } catch (std::out_of_range& e) {
-                tlm::ITelemetry::INSTANCE->log(std::make_unique<std::string>("Unknown packet ID: " + std::to_string(conf.getPacketId())));
-            }
-        }
-        return packets;
+    uint8_t RxPacket::readByte() const {
+        return data()[readIdx++];
     }
 
     TxPacket::TxPacket(uint8_t *data): pData(data) {
@@ -113,4 +84,38 @@ namespace crsf {
     uint8_t *TxPacket::data() {
         return pData + getPacketOffset();
     }
+
+    void TxPacket::defaultRoute() {
+        setExtDest(CRSF_ADDRESS_RADIO_TRANSMITTER);
+        setExtSrc(CRSF_ADDRESS_CRSF_TRANSMITTER);
+    }
+
+    void TxPacket::writeString(const std::string &str) {
+        for (auto& c:str) {
+            writeByte(c);
+        }
+        writeByte(0);
+    }
+
+    void TxPacket::writeByte(uint8_t byte) {
+        data()[writeIdx++] = byte;
+    }
+
+    void TxPacket::writeBytes(const uint8_t *data, size_t len, bool prefixSize) {
+        if (prefixSize) {
+            writeByte(len);
+        }
+        for (int i = 0; i < len; i++) {
+            writeByte(data[i]);
+        }
+    }
+
+    void TxPacket::calcCRCAndSetPacketLength() {
+        calcCRCAndSetPacketLength(writeIdx);
+    }
+
+    size_t TxPacket::getWriteIndex() const {
+        return writeIdx;
+    }
+
 }
