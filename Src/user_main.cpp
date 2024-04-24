@@ -41,7 +41,7 @@ namespace entry {
         dev::init(); // init devices
 
 
-        init_tasks(); // Start task threads
+        tasks::init(); // Start task threads
         sensor::sensors_init();
 
         mainLastWakeTime = xTaskGetTickCount();

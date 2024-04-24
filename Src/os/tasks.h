@@ -7,8 +7,21 @@
 
 #ifdef __cplusplus
 
-void init_tasks();
+#include <os/atomic_data.h>
 
+namespace tasks {
+
+    struct DShotData{
+        uint16_t d[4];
+    };
+
+
+
+    extern os::AtomicData<DShotData> motorData;
+
+void init();
+
+}
 #endif
 
 #endif //STUFF_TASKS_H
