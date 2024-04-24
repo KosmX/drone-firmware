@@ -5,6 +5,10 @@
  *      Author: mokhwasomssi
  */
 
+/*
+ * TODO: refactor the whole DShot controller if I have nothing else to do
+ * note by Cynthia
+ */
 
 #ifndef __DSHOT_H__
 #define __DSHOT_H__
@@ -22,23 +26,19 @@ extern "C" {
 
 /* User Configuration */
 // Timer Clock
-#define TIMER_CLOCK				100000000	// 100MHz
+#define TIMER_CLOCK				96000000	// 96MHz
 
-// MOTOR 1 (PA3) - TIM5 Channel 4, DMA1 Stream 3
 #define MOTOR_1_TIM             (&htim5)
-#define MOTOR_1_TIM_CHANNEL     TIM_CHANNEL_4
+#define MOTOR_1_TIM_CHANNEL     TIM_CHANNEL_1
 
-// MOTOR 2 (PA2) - TIM2 Channel 3, DMA1 Stream 1
-#define MOTOR_2_TIM             (&htim2)
-#define MOTOR_2_TIM_CHANNEL     TIM_CHANNEL_3
+#define MOTOR_2_TIM             (&htim5)
+#define MOTOR_2_TIM_CHANNEL     TIM_CHANNEL_2
 
-// MOTOR 3 (PA0) - TIM2 Channel 1, DMA1 Stream 5
 #define MOTOR_3_TIM             (&htim2)
-#define MOTOR_3_TIM_CHANNEL     TIM_CHANNEL_1
+#define MOTOR_3_TIM_CHANNEL     TIM_CHANNEL_3
 
-// MOTOR 4 (PA1) - TIM5 Channel 2, DMA1 Stream 4
-#define MOTOR_4_TIM             (&htim5)
-#define MOTOR_4_TIM_CHANNEL     TIM_CHANNEL_2
+#define MOTOR_4_TIM             (&htim2)
+#define MOTOR_4_TIM_CHANNEL     TIM_CHANNEL_4
 
 
 /* Definition */
