@@ -8,6 +8,7 @@
 #include "usart.h"
 
 #include "timers.h"
+#include "crsf/CommStation.h"
 
 /**
  * Start tasks from RT thread, then return.
@@ -22,13 +23,19 @@ namespace tasks {
     void init() {
         //tlm::ITelemetry::INSTANCE = new tlm::DummyTelemetry();  // For creating a /dev/null telemetry
 
+
+
+        crsf::ELRSController *p;
+        CommStation::INSTANCE = p = new crsf::ELRSController(*os::uart_dma::getFor(&huart10, 64*16));
+        p->initComm();
+
         auto timer = xTimerCreate(
-                "i2c1_read_timing",
+                "motor_setup_timer",
                 pdMS_TO_TICKS(20),
                 true,
                 nullptr,
                 [](TimerHandle_t timer) {
-                    // TODO find out how does the timing works
+
                 });
         //xTimerStart(timer, 10);
 

@@ -10,6 +10,8 @@
 #include "os/mutex_wapper.h"
 #include <tl/RingBuffer.h>
 #include "CRSF_listener.h"
+#include "os/atomic_data.h"
+#include "Packets.h"
 #include <map>
 
 /**
@@ -19,6 +21,8 @@
 class CommStation {
 public:
     static CommStation* INSTANCE;
+
+    static os::AtomicData<crsf::Channels> controlData;
 
     [[nodiscard]] virtual bool isControllerPresent() const = 0;
 };
@@ -56,19 +60,6 @@ namespace crsf {
         int counter = 0;
 
         /**
-         * BLOCKING
-         * init ELRS connection
-         * return when connection is active
-         */
-        void initComm();
-
-        /**
-         * Handle received data, including validation and processing
-         * @param pData volatile pointer to data. Its content is safe for processing, but is going to be invalid after handlePacket returns
-         */
-        void handlePacket(os::RingBufferEntryPtr pData);
-
-        /**
          * Check for new data, and if there is any, handle it
          * @param uart handler
          * @return amount of packets handled
@@ -82,6 +73,13 @@ namespace crsf {
         explicit ELRSController(os::uart_dma& uart);
 
         bool isControllerPresent() const override;
+
+        /**
+         * BLOCKING
+         * init ELRS connection
+         * return when connection is active
+         */
+        void initComm();
 
         void sendPacket(std::function<void(TxPacket&)> f);
 

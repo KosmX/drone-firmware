@@ -22,9 +22,12 @@ namespace entry {
 
 
     extern "C" void StartDefaultTask(void *argument) {
+        dev::pcb_led.setState(true);
+
         vTaskDelay(2000);
         init();
 
+        dev::pcb_led.setState(false);
         //*
         while (true) {
             rtLoop();

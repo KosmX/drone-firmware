@@ -11,6 +11,7 @@
 
 
 CommStation* CommStation::INSTANCE = nullptr;
+os::AtomicData<CommStation::DShotData> CommStation::motorData{};
 
 namespace crsf {
 
@@ -63,6 +64,11 @@ namespace crsf {
             {
                 CRSF_FRAMETYPE_LINK_STATISTICS, pass
             },
+            {
+                CRSF_FRAMETYPE_RC_CHANNELS_PACKED, [&](const ChannelData &p) {
+                    CommStation::motorData = p.readChannels();
+                }
+            }
     }
     {
         handleThread = osThreadNew([](void* p) {
@@ -129,6 +135,10 @@ namespace crsf {
                 p.calcCRCAndSetPacketLength();
             }
         });
+    }
+
+    void ELRSController::initComm() {
+         // ?
     }
 
 } // crsf
