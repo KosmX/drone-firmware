@@ -21,23 +21,26 @@ namespace os {
         hspi->RxCpltCallback = [](SPI_HandleTypeDef* _spi){
             auto* _this = spi::getFor(_spi);
 
-            auto pTrue = pdTRUE;
-            xSemaphoreGiveFromISR(_this->readSemaphore, &pTrue);
+            auto p = pdTRUE;
+            xSemaphoreGiveFromISR(_this->readSemaphore, &p);
+            portYIELD_FROM_ISR(p)
         };
 
         hspi->TxCpltCallback = [](SPI_HandleTypeDef* _spi){
             auto* _this = spi::getFor(_spi);
 
-            auto pTrue = pdTRUE;
-            xSemaphoreGiveFromISR(_this->writeSemaphore, &pTrue);
+            auto p = pdTRUE;
+            xSemaphoreGiveFromISR(_this->writeSemaphore, &p);
+            portYIELD_FROM_ISR(p)
         };
 
         hspi->RxCpltCallback = [](SPI_HandleTypeDef* _spi){
             auto* _this = spi::getFor(_spi);
 
-            auto pTrue = pdTRUE;
-            xSemaphoreGiveFromISR(_this->readSemaphore, &pTrue);
-            xSemaphoreGiveFromISR(_this->writeSemaphore, &pTrue);
+            auto p = pdTRUE;
+            xSemaphoreGiveFromISR(_this->readSemaphore, &p);
+            xSemaphoreGiveFromISR(_this->writeSemaphore, &p);
+            portYIELD_FROM_ISR(p)
         };
 
     }

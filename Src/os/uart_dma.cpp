@@ -37,6 +37,7 @@ namespace os {
         HAL_UART_RegisterCallback(huart, HAL_UART_CallbackIDTypeDef::HAL_UART_TX_COMPLETE_CB_ID, [](UART_HandleTypeDef* huart) {
             auto newTask = pdFALSE;
             xSemaphoreGiveFromISR(uart_dma::getFor(huart, 0)->writeSemaphore, &newTask);
+            portYIELD_FROM_ISR(newTask)
         });
 
         //xSemaphoreGive(readSemaphore);
@@ -95,7 +96,8 @@ namespace os {
     sizeMask{size - 1},
     pos{pos},
     startPos{pos},
-    dataSize{data_size} {}
+    dataSize{data_size}
+    {}
 
     char RingBufferEntryPtr::operator*() const {
         if (pos - startPos < dataSize) {
@@ -106,11 +108,13 @@ namespace os {
     }
 
     uint8_t RingBufferEntryPtr::operator[](size_t pos) const {
-        if (this->pos - startPos + pos < dataSize) {
-            return buffer[(this->pos + pos) & sizeMask];
-        } else {
+#ifdef USE_FULL_ASSERT
+        if (this->pos - startPos + pos >= dataSize) {
             throw std::out_of_range{"ringbuffer index"};
         }
+#endif
+        return buffer[(this->pos + pos) & sizeMask];
+
     }
 
     RingBufferEntryPtr &RingBufferEntryPtr::operator++() {

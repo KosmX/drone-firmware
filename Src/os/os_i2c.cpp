@@ -27,14 +27,16 @@ namespace os {
         // TODO convert this to a memory function generator with captures
         hi2c->MemRxCpltCallback = ([](I2C_HandleTypeDef *hi2c){
             auto* _this = i2c::getFor(hi2c);
-            auto pTrue = pdTRUE;
-            xSemaphoreGiveFromISR(_this->readSemaphore, &pTrue);
+            auto p = pdFALSE;
+            xSemaphoreGiveFromISR(_this->readSemaphore, &p);
+            portYIELD_FROM_ISR(p)
         });
 
         hi2c->MemTxCpltCallback = [](I2C_HandleTypeDef* hi2c) {
             auto* _this = i2c::getFor(hi2c);
-            auto pTrue = pdTRUE;
-            xSemaphoreGiveFromISR(_this->writeSemaphore, &pTrue);
+            auto p = pdFALSE;
+            xSemaphoreGiveFromISR(_this->writeSemaphore, &p);
+            portYIELD_FROM_ISR(p)
         };
 
     }

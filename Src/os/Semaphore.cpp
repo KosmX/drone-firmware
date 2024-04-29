@@ -3,9 +3,12 @@
 //
 
 #include "Semaphore.h"
+#include "stm32f4xx_hal.h"
 
 namespace os {
-    Semaphore::Semaphore(): handle(xSemaphoreCreateBinaryStatic(&sData)) {}
+    Semaphore::Semaphore(): handle(xSemaphoreCreateBinaryStatic(&sData)) {
+        assert_param(handle);
+    }
 
     Semaphore::~Semaphore() {
         vSemaphoreDelete(handle);
