@@ -6,7 +6,7 @@
 #define DRONE_FW_COMMSTATION_H
 
 #include <os/uart_dma.h>
-#include "cmsis_os2.h"
+#include "os/Task.h"
 #include "os/mutex_wapper.h"
 #include <tl/RingBuffer.h>
 #include "CRSF_listener.h"
@@ -36,16 +36,18 @@ namespace crsf {
     public:
         struct msgData {
             uint8_t buf[64];
+
+            size_t size();
         };
 
     private:
         os::uart_dma& uart;
 
 
-        osThreadId_t handleThread{};
-        osThreadId_t sendThread{};
+        os::Task handleThread{"CRSF_RX"};
+        os::Task sendThread{"CRSF_TX"};
 
-        [[noreturn]] void runThread();
+        [[noreturn]] void rx();
 
         tl::RingBuffer<msgData> buf{8};
 
@@ -65,6 +67,8 @@ namespace crsf {
          * @return amount of packets handled
          */
          int checkForData();
+
+         [[noreturn]] void tx();
     public:
 
         struct MessageEntry {

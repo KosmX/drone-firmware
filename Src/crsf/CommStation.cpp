@@ -15,13 +15,6 @@ os::AtomicData<crsf::Channels> CommStation::controlData{};
 
 namespace crsf {
 
-
-    constexpr const osThreadAttr_t thread_attr = {
-            .name = "CRSF_listen",
-            .stack_size = 128 * 4,
-            .priority = (osPriority_t) osPriorityNormal,
-    };
-
     void pass(const RxPacket&) {}
 
     ELRSController::ELRSController(os::uart_dma& uart): uart(uart),
@@ -71,17 +64,15 @@ namespace crsf {
             }
     }
     {
-        handleThread = osThreadNew([](void* p) {
-            auto* pThis = reinterpret_cast<ELRSController*>(p);
-            pThis->runThread();
+        handleThread.start([this] { rx(); });
 
-        }, this, &thread_attr);
+        sendThread.start([this]{ tx(); });
     }
 
     /**
      * Thread function
      */
-    [[noreturn]] void ELRSController::runThread() {
+    [[noreturn]] void ELRSController::rx() {
 
         const TickType_t frequency = pdMS_TO_TICKS(10);
         TickType_t lastWakeTime = osKernelGetTickCount();
@@ -146,4 +137,16 @@ namespace crsf {
         return true;
     }
 
+    void ELRSController::tx() {
+        while (true) {
+            buf.waitForElement(); // make sure to have something
+            auto& e = buf.peek();
+            uart.write(e.buf, e.size());
+            buf.pop_v();
+        }
+    }
+
+    size_t ELRSController::msgData::size() {
+        return buf[1] + 2;
+    }
 } // crsf
