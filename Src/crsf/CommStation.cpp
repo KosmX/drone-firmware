@@ -17,7 +17,7 @@ namespace crsf {
 
 
     constexpr const osThreadAttr_t thread_attr = {
-            .name = "telemetry",
+            .name = "CRSF_listen",
             .stack_size = 128 * 4,
             .priority = (osPriority_t) osPriorityNormal,
     };
@@ -84,11 +84,12 @@ namespace crsf {
     [[noreturn]] void ELRSController::runThread() {
 
         const TickType_t frequency = pdMS_TO_TICKS(10);
-        TickType_t lastWakeTime;
+        TickType_t lastWakeTime = osKernelGetTickCount();
 
 
         while (true) {
 
+            log("checking CRSF\n");
             checkForData();
             // delay before doing everything again
             vTaskDelayUntil(&lastWakeTime, frequency);

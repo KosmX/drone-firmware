@@ -9,7 +9,7 @@
 #include "os/mutex_wapper.h"
 #include "os/os.h"
 #include <functional>
-#include "os/Semaphore.h"
+#include "os/Condition.h"
 
 namespace tl {
 
@@ -31,7 +31,7 @@ namespace tl {
         size_t writeIdx = 0;
         size_t actualSize = 0;
         mutable os::Mutex sync{};
-        mutable os::Semaphore popNotifier{};
+        mutable os::Condition popNotifier{};
 
     public:
         explicit RingBuffer(size_t size, Allocator allocator = Allocator()): alloc(allocator), size(size) {
@@ -78,7 +78,7 @@ namespace tl {
 
             new(data) T(t); // copy ctor
 
-            popNotifier.give();
+            popNotifier.notify();
             return data;
         }
 
@@ -92,7 +92,7 @@ namespace tl {
             if (writeIdx == size) writeIdx = 0;
             actualSize++;
 
-            popNotifier.give();
+            popNotifier.notify();
             return new(data) T(std::forward<Args>(args)...);
         }
 
@@ -115,7 +115,7 @@ namespace tl {
 
             new(data) T();
             func(*data);
-            popNotifier.give();
+            popNotifier.notify();
         }
 
         /**
@@ -182,14 +182,7 @@ namespace tl {
             auto l = sync.lock();
             if (isNotEmpty()) return;
 
-            // make the lock taken
-            popNotifier.takeOrPass();
-
-            // unlock buffer
-            l.unlock();
-
-            // wait for an entry to be inserted
-            popNotifier.take();
+            popNotifier.wait(l);
         }
 
     };

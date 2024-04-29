@@ -16,6 +16,7 @@ namespace os {
     private:
         volatile TaskHandle_t taskToNotify = nullptr;
     public:
+        Condition() = default;
         Condition(const Condition&) = delete;
         Condition& operator=(const Condition&) = delete;
 

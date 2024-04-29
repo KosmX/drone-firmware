@@ -45,4 +45,15 @@ namespace os {
             mutex.unlock();
         }
     }
+
+    void MutexLock::lock() {
+        if (!locked){
+            locked = true;
+            mutex.lockUnsafe();
+        }
+    }
+
+    MutexLock::operator bool() const {
+        return locked;
+    }
 } // os

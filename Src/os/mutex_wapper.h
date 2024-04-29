@@ -11,6 +11,23 @@ namespace os {
 
     class Mutex;
 
+    /**
+     * Control instance for mutex<br>
+     * Every thread should use the same control instance (it is not thread safe)
+     * <p>
+     * When destroyed, it will unlock the associated lock
+     *
+     * @example
+     *
+     *     {
+     *       auto l = mutex.lock(); // this will acquire the lock and create a control instance
+     *
+     *       l.unlock() // possible
+     *       l.lock() // also possible
+     *
+     *     } // when leaving the block, the instance will be destroyed, the lock will be freed (if wasn't earlier)
+     *
+     */
     class MutexLock {
     private:
         Mutex& mutex;
@@ -20,8 +37,10 @@ namespace os {
         explicit MutexLock(Mutex& m);
 
         void unlock();
+        void lock();
 
         MutexLock& operator=(MutexLock&& other) noexcept;
+        operator bool() const;
 
         ~MutexLock();
     };
