@@ -46,7 +46,7 @@ elseif ("${CMAKE_BUILD_TYPE}" STREQUAL "MinSizeRel")
     add_compile_options(-Os)
 else ()
     message(STATUS "Minimal optimization, debug info included")
-    add_compile_options(-Og -g -DUSE_FULL_ASSERT)
+    add_compile_options(-Og -g -DUSE_FULL_ASSERT -DconfigRECORD_STACK_HIGH_ADDRESS=1)
 endif ()
 
 include_directories(Core/Inc Drivers/STM32F4xx_HAL_Driver/Inc Drivers/STM32F4xx_HAL_Driver/Inc/Legacy Middlewares/Third_Party/FreeRTOS/Source/include Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F Drivers/CMSIS/Device/ST/STM32F4xx/Include Drivers/CMSIS/Include Core/ThreadSafe MadgwickAHRS/src Drivers/Bosch Src)
