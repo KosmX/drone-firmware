@@ -174,7 +174,7 @@ namespace tl {
         /**
          * Wait for a new element, returns immediately if not empty
          */
-        void wait() {
+        void waitForElement() {
             // 1. return if not empty
             //if (isNotEmpty()) return;
 
