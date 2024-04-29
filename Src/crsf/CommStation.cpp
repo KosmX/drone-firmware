@@ -11,7 +11,7 @@
 
 
 CommStation* CommStation::INSTANCE = nullptr;
-os::AtomicData<CommStation::DShotData> CommStation::motorData{};
+os::AtomicData<crsf::Channels> CommStation::controlData{};
 
 namespace crsf {
 
@@ -24,7 +24,7 @@ namespace crsf {
 
     void pass(const RxPacket&) {}
 
-    ELRSController::ELRSController(os::uart_dma &uart): uart(uart),
+    ELRSController::ELRSController(os::uart_dma& uart): uart(uart),
     handlers{
             {
                     CRSF_FRAMETYPE_DEVICE_PING,     [&](const RxPacket &rec) {
@@ -66,7 +66,7 @@ namespace crsf {
             },
             {
                 CRSF_FRAMETYPE_RC_CHANNELS_PACKED, [&](const ChannelData &p) {
-                    CommStation::motorData = p.readChannels();
+                    CommStation::controlData = p.readChannels();
                 }
             }
     }
@@ -139,6 +139,10 @@ namespace crsf {
 
     void ELRSController::initComm() {
          // ?
+    }
+
+    bool ELRSController::isControllerPresent() const {
+        return true;
     }
 
 } // crsf
