@@ -7,6 +7,8 @@
 
 #ifdef __cplusplus
 
+#include <cstdint>
+
 namespace entry {
 
 /**
@@ -19,9 +21,14 @@ namespace entry {
 // C functions
 
 extern "C" {
+#else
+#include "stdint.h"
 #endif
 
     void preInit();
+
+    void taskError();
+    void user_assert_failed(uint8_t *file, uint32_t line);
 
 #ifdef __cplusplus
 }

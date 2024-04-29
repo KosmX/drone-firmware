@@ -3,6 +3,7 @@
 //
 
 #include <string>
+#include <format>
 #include "user_main.h"
 #include "os/tasks.h"
 #include "telemetry.h"
@@ -77,7 +78,7 @@ namespace entry {
             auto& a = r.first;
             auto& g = r.second;
 
-            log("accel:\t" + std::to_string(a.x) + "\t" + std::to_string(a.y) + "\t" + std::to_string(a.z) + "\n");
+            //log("accel:\t" + std::to_string(a.x) + "\t" + std::to_string(a.y) + "\t" + std::to_string(a.z) + "\n");
             //log("gyro:\t" + std::to_string(g.x) + "\t" + std::to_string(g.y) + "\t" + std::to_string(g.z) + "\n");
         }
 
@@ -94,5 +95,23 @@ namespace entry {
 void preInit() {
     // Init code before OS starts
     //HAL_Delay(2000); // wait 2 seconds for debugger,
+}
+
+void taskError() {
+
+    TaskStatus_t taskStatus{};
+
+    vTaskGetInfo({}, &taskStatus, pdTRUE, eRunning);
+
+    log(std::format("Thread {} status:\nbase priority: {}\ncurrent priority: {}\nwatermark: {}",
+                    taskStatus.pcTaskName, taskStatus.uxBasePriority, taskStatus.uxCurrentPriority, taskStatus.usStackHighWaterMark));
+
+}
+
+void user_assert_failed(uint8_t *file, uint32_t line) {
+
+    log(std::format("Exception: file {} on line {}\n", reinterpret_cast<char*>(file), line));
+
+    taskError();
 }
 
