@@ -69,19 +69,45 @@ namespace crsf {
         sendThread.start([this]{ tx(); });
     }
 
+
+    void ELRSController::clearRX() {
+        // start by removing garbage data
+        const TickType_t frequency = pdMS_TO_TICKS(10);
+        TickType_t lastWakeTime = osKernelGetTickCount();
+
+        while (true) {
+            while (uart.available() >= 1 && uart.peek() != 0xc8) uart.read(1);
+            if (uart.available() >= 1 && uart.peek() == 0xc8) {
+                break;
+            }
+        }
+
+    }
+
     /**
      * Thread function
      */
     [[noreturn]] void ELRSController::rx() {
 
+        clearRX();
+
         const TickType_t frequency = pdMS_TO_TICKS(10);
         TickType_t lastWakeTime = osKernelGetTickCount();
 
+        int counter = 0;
 
         while (true) {
 
-            log("checking CRSF\n");
+            //log("checking CRSF\n");
             checkForData();
+
+            if (counter++ >= 50) {
+                counter = 0;
+                log("ELRS Heartbeat\n");
+                sendPacket([](TxPacket& p) {
+                    HeartBeat::write(p);
+                });
+            }
             // delay before doing everything again
             vTaskDelayUntil(&lastWakeTime, frequency);
         }
@@ -93,28 +119,29 @@ namespace crsf {
 
         while (uart.available() >= 2) {
             auto len = uart.peek(1);
+#ifdef USE_FULL_ASSERT
+            if(len > 64) {
+                uart.stop();
+                assert_param(0);
+            }
+#endif
             if (uart.available() < CRSF_FRAME_SIZE(len)) break; // not enough data yet
 
             RxPacket conf{uart.read(CRSF_FRAME_SIZE(len))};
             // TODO verify CRC
 
-            auto crc = GenericCRC8::PolyD5.calc((conf.pData + 2), conf.getLength() + 1);
+            auto crc = GenericCRC8::PolyD5.calc((conf.pData + 2), conf.getLength() - 1);
             if (crc != conf.getCrc()) {
-                tlm::ITelemetry::INSTANCE->log(std::make_unique<std::string>("CRC doesn't match for packet"));
+                tlm::ITelemetry::INSTANCE->log(std::make_unique<std::string>("CRC doesn't match for packet\n"));
             }
 
-            try {
+            if (handlers.count(static_cast<crsf_frame_type_e>(conf.getPacketId())) != 0){
                 handlers.at(static_cast<crsf_frame_type_e>(conf.getPacketId()))(conf);
-            } catch (std::out_of_range& e) {
+            } else {
                 tlm::ITelemetry::INSTANCE->log(std::make_unique<std::string>("Unknown packet ID: " + std::to_string(conf.getPacketId())));
             }
+
             packets++;
-        }
-        if (counter++ >= 50) {
-            counter = 0;
-            sendPacket([](TxPacket& p) {
-                HeartBeat::write(p);
-            });
         }
         return packets;
     }

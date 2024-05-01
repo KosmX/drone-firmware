@@ -13,8 +13,10 @@ namespace os {
             assert_param(false); // this shouldn't happen
         }
         taskToNotify = xTaskGetCurrentTaskHandle();
+        lock.unlock();
         bool r = xTaskNotifyWait(pdFALSE, std::numeric_limits<uint32_t>::max(), nullptr, portMAX_DELAY) == pdPASS;
         lock.lock();
+        taskToNotify = nullptr;
         return r;
     }
 

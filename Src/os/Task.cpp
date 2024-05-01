@@ -25,6 +25,7 @@ namespace os {
             log("Caught unknown exception\n");
         }
         delete f;
+        vTaskDelete(nullptr);
     }
 
     void Task::start(std::function<void()>&& entry) {

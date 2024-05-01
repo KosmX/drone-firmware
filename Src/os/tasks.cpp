@@ -26,7 +26,7 @@ namespace tasks {
 
 
         crsf::ELRSController *p;
-        CommStation::INSTANCE = p = new crsf::ELRSController(*os::uart_dma::getFor(&huart10, 64*16));
+        CommStation::INSTANCE = p = new crsf::ELRSController(*os::uart_dma::getFor(&huart10, 64*64));
         p->initComm();
 
         auto timer = xTimerCreate(

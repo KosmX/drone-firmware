@@ -65,7 +65,7 @@ namespace os {
 
         uint8_t* const recBuffer;
         const size_t recBufferLen;
-        size_t recBufferPos;
+        size_t recBufferPos = 0;
 
         [[nodiscard]] inline size_t getDptr() const;
 
@@ -93,14 +93,18 @@ namespace os {
          */
         RingBufferEntryPtr read(size_t amount);  // *(uart->read(1));   c:
 
+        /**
+         * Reset RX buffer
+         */
+        void clear();
 
         /* -------- Write specific functions -------- */
         
         HAL_StatusTypeDef write(const uint8_t* data, size_t len);
 
-
         ~uart_dma(); // Not going to be used, but it doesn't hurt
 
+        void stop();
     };
 
 } // os

@@ -6,12 +6,14 @@
 #include <format>
 #include "user_main.h"
 #include "os/tasks.h"
+#include "os/Task.h"
 #include "telemetry.h"
 #include "driver/bmp.h"
 #include "devices.h"
 #include "task.h"
 #include "timers.h"
 #include "sensor/builtin_sensor_data.h"
+#include "crsf/CommStation.h"
 
 
 
@@ -44,6 +46,10 @@ namespace entry {
 
         dev::init(); // init devices
 
+        os::Task task{"suicideTask"};
+        task.start([] {
+            5+5; // do nothing useful then exit
+        });
 
         tasks::init(); // Start task threads
         sensor::sensors_init();
@@ -54,6 +60,17 @@ namespace entry {
     void rtLoop() {
 
         static uint32_t counter = 0;
+
+        static crsf::Channels currentControlStatus{};
+
+        auto& dataHolder = crsf::ELRSController::INSTANCE->controlData;
+        {
+            auto optional = dataHolder.get();
+            if (optional.has_value()){
+                currentControlStatus = optional.value();
+            }
+        }
+
 
 
         dev::pcb_led.toggle();
@@ -83,6 +100,7 @@ namespace entry {
         }
 
         //log("main loop took " + std::to_string((xTaskGetTickCount() - mainLastWakeTime)/(float)frequency) + " time to run\n");
+        log(std::format("CH1: {}\tCH2: {}\tCH3: {}\tCH4: {}\n", currentControlStatus[0], currentControlStatus[1], currentControlStatus[2], currentControlStatus[3]));
 
         counter++;
         if (counter >= 4) counter = 0;

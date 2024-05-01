@@ -44,12 +44,14 @@ namespace crsf {
         os::uart_dma& uart;
 
 
-        os::Task handleThread{"CRSF_RX"};
+        os::Task handleThread{"CRSF_RX", osPriorityAboveNormal, 128*8};
         os::Task sendThread{"CRSF_TX"};
 
         [[noreturn]] void rx();
 
-        tl::RingBuffer<msgData> buf{8};
+        void clearRX();
+
+        tl::RingBuffer<msgData> buf{16};
 
 
         // RxPacket handling will be a procedural switch case.
@@ -57,9 +59,6 @@ namespace crsf {
         typedef std::function<void(const RxPacket& config)> HandlerFunction;
 
         const std::map<crsf_frame_type_e, HandlerFunction> handlers;
-
-
-        int counter = 0;
 
         /**
          * Check for new data, and if there is any, handle it

@@ -74,6 +74,7 @@ extern DMA_HandleTypeDef hdma_usart6_rx;
 extern DMA_HandleTypeDef hdma_usart6_tx;
 extern UART_HandleTypeDef huart7;
 extern UART_HandleTypeDef huart8;
+extern UART_HandleTypeDef huart10;
 extern USART_HandleTypeDef husart2;
 extern TIM_HandleTypeDef htim4;
 
@@ -471,6 +472,20 @@ void UART8_IRQHandler(void)
   /* USER CODE BEGIN UART8_IRQn 1 */
 
   /* USER CODE END UART8_IRQn 1 */
+}
+
+/**
+  * @brief This function handles UART10 global interrupt.
+  */
+void UART10_IRQHandler(void)
+{
+  /* USER CODE BEGIN UART10_IRQn 0 */
+
+  /* USER CODE END UART10_IRQn 0 */
+  HAL_UART_IRQHandler(&huart10);
+  /* USER CODE BEGIN UART10_IRQn 1 */
+
+  /* USER CODE END UART10_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

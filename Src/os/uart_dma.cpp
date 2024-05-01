@@ -40,6 +40,8 @@ namespace os {
             portYIELD_FROM_ISR(newTask)
         });
 
+        HAL_UART_Receive_DMA(huart, recBuffer, bufSize);
+
         //xSemaphoreGive(readSemaphore);
     }
 
@@ -82,13 +84,22 @@ namespace os {
         auto l = writeMutex.lock();
 
         // i don't care if the semaphore is taken or not, but I need it to be taken.
-        xSemaphoreTake(writeSemaphore, 0);
+        //xSemaphoreTake(writeSemaphore, 0);
 
         HAL_UART_Transmit_DMA(huart, data, len);
 
         xSemaphoreTake(writeSemaphore, portMAX_DELAY);
 
         return HAL_OK;
+    }
+
+    void uart_dma::clear() {
+        stop();
+        HAL_UART_Receive_DMA(huart, recBuffer, recBufferLen);
+    }
+
+    void uart_dma::stop() {
+        HAL_UART_DMAStop(huart);
     }
 
     RingBufferEntryPtr::RingBufferEntryPtr(const uint8_t *buffer, size_t size, size_t pos, size_t data_size):

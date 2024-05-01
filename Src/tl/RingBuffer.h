@@ -69,7 +69,9 @@ namespace tl {
         }
         T* push(const T& t) {
             auto l = sync.lock();
-            if (isFull()) throw std::out_of_range("No more space in ringbuffer, size is already at " + std::to_string(size));
+            if (isFull()) {
+                throw std::out_of_range("No more space in ringbuffer, size is already at " + std::to_string(size));
+            }
             T* data = &pData[writeIdx];
 
             writeIdx = writeIdx + 1;
@@ -105,7 +107,9 @@ namespace tl {
          */
         void configBack(std::function<void(T&)> func) {
             auto l = sync.lock();
-            if (isFull()) throw std::out_of_range("No more space in ringbuffer, size is already at " + std::to_string(size));
+            if (isFull()) {
+                throw std::out_of_range("No more space in ringbuffer, size is already at " + std::to_string(size));
+            }
             T* data = &pData[writeIdx];
 
             writeIdx = writeIdx + 1;

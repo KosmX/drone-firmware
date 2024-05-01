@@ -43,4 +43,9 @@ namespace crsf {
         }
         return dest;
     }
+
+    float Channels::operator[](int idx) {
+        assert_param(idx >= 0 && idx < 16); // valid channel
+        return (data[idx]-992)/819.0f; // map controller input to a -1 .. 1 range float
+    }
 } // crsf

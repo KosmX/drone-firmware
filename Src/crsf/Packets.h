@@ -20,6 +20,8 @@ namespace crsf {
 
     struct Channels {
         uint16_t data[16];
+
+        float operator[](int idx);
     };
 
     class ChannelData: public RxPacket {
