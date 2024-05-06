@@ -138,7 +138,7 @@ static void dshot_start_pwm()
 static uint16_t dshot_prepare_packet(uint16_t value)
 {
     uint16_t packet;
-    bool dshot_telemetry = false;
+    bool dshot_telemetry = value & 0x8000;
 
     packet = (value << 1) | (dshot_telemetry ? 1 : 0);
 

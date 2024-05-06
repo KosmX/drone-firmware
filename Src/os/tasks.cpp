@@ -30,7 +30,16 @@ namespace tasks {
         CommStation::INSTANCE = p = new crsf::ELRSController(*os::uart_dma::getFor(&huart10, 64*64));
         p->initComm();
 
-        dshot_init(dshot_type_e::DSHOT600);
+        dshot_init(dshot_type_e::DSHOT300);
+
+        /**
+        os::Task esc_logger("ESC_logger");
+        esc_logger.start({
+            auto& esc_uart = os::uar
+            while(true) {
+
+            }
+        });*/
     }
 
 

@@ -21,7 +21,7 @@
 
 namespace entry {
 
-    const TickType_t frequency = pdMS_TO_TICKS(10);
+    const TickType_t frequency = pdMS_TO_TICKS(2);
     TickType_t mainLastWakeTime;
 
 
@@ -59,22 +59,10 @@ namespace entry {
         sensor::sensors_init();
 
 
-        control.motor_value[0] = 1;
-        dshot_write(control.motor_value);
-        os::sleep(260);
-        control.motor_value[0] = 0;
-        control.motor_value[1] = 2;
-        dshot_write(control.motor_value);
-        os::sleep(260);
-        control.motor_value[1] = 0;
-        control.motor_value[2] = 3;
-        dshot_write(control.motor_value);
-        os::sleep(280);
-        control.motor_value[2] = 0;
-        control.motor_value[3] = 4;
-        dshot_write(control.motor_value);
-        os::sleep(280);
-        control.motor_value[3] = 0;
+        for (int i = 0; i < 100; i+= 2) {
+            dshot_write(control.motor_value);
+            os::sleep(2);
+        }
 
         mainLastWakeTime = xTaskGetTickCount();
     }
@@ -122,14 +110,23 @@ namespace entry {
         }
 
         //log("main loop took " + std::to_string((xTaskGetTickCount() - mainLastWakeTime)/(float)frequency) + " time to run\n");
-        log(std::format("CH1: {}\tCH2: {}\tCH3: {}\tCH4: {}\n", currentControlStatus[0], currentControlStatus[1], currentControlStatus[2], currentControlStatus[3]));
+        //log(std::format("CH1: {}\tCH2: {}\tCH3: {}\tCH4: {}\n", currentControlStatus[0], currentControlStatus[1], currentControlStatus[2], currentControlStatus[3]));
 
         counter++;
         if (counter >= 4) counter = 0;
         vTaskDelayUntil(&mainLastWakeTime, frequency);
 
+        if (xTaskGetTickCount() - mainLastWakeTime >= frequency) {
+            log("Main loop took longer than expected");
+#ifdef USE_FULL_ASSERT
+            assert_param(false);
+#endif
+        }
 
         dev::pcb_led.setState(dshot::fromFloat(currentControlStatus[2]) <= 50);
+        control.motor_value[1] = dshot::fromFloat(currentControlStatus[2]) - 2;
+        control.motor_value[2] = dshot::fromFloat(currentControlStatus[2]) - 2;
+        control.motor_value[3] = dshot::fromFloat(currentControlStatus[2]) - 2;
         control.motor_value[0] = dshot::fromFloat(currentControlStatus[2]) - 2;
         dshot_write(control.motor_value);
 
