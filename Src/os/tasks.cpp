@@ -6,6 +6,7 @@
 #include "os.h"
 #include "telemetry.h"
 #include "usart.h"
+#include "driver/dshot.h"
 
 #include "timers.h"
 #include "crsf/CommStation.h"
@@ -29,16 +30,7 @@ namespace tasks {
         CommStation::INSTANCE = p = new crsf::ELRSController(*os::uart_dma::getFor(&huart10, 64*64));
         p->initComm();
 
-        auto timer = xTimerCreate(
-                "motor_setup_timer",
-                pdMS_TO_TICKS(20),
-                true,
-                nullptr,
-                [](TimerHandle_t timer) {
-
-                });
-        //xTimerStart(timer, 10);
-
+        dshot_init(dshot_type_e::DSHOT600);
     }
 
 

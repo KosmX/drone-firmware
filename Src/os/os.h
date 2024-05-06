@@ -8,4 +8,9 @@
 #include "FreeRTOS.h"
 #include "semphr.h"
 
+// generic OS related shortcuts
+namespace os {
+    void sleep(uint32_t ms);
+}
+
 #endif //STUFF_OS_H

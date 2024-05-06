@@ -14,6 +14,8 @@
 #include "timers.h"
 #include "sensor/builtin_sensor_data.h"
 #include "crsf/CommStation.h"
+#include "control.h"
+#include "driver/dshot.h"
 
 
 
@@ -37,6 +39,8 @@ namespace entry {
         }//*/
     }
 
+    Control control;
+
 
     void init() {
         // Init after os start
@@ -53,6 +57,24 @@ namespace entry {
 
         tasks::init(); // Start task threads
         sensor::sensors_init();
+
+
+        control.motor_value[0] = 1;
+        dshot_write(control.motor_value);
+        os::sleep(260);
+        control.motor_value[0] = 0;
+        control.motor_value[1] = 2;
+        dshot_write(control.motor_value);
+        os::sleep(260);
+        control.motor_value[1] = 0;
+        control.motor_value[2] = 3;
+        dshot_write(control.motor_value);
+        os::sleep(280);
+        control.motor_value[2] = 0;
+        control.motor_value[3] = 4;
+        dshot_write(control.motor_value);
+        os::sleep(280);
+        control.motor_value[3] = 0;
 
         mainLastWakeTime = xTaskGetTickCount();
     }
@@ -105,6 +127,12 @@ namespace entry {
         counter++;
         if (counter >= 4) counter = 0;
         vTaskDelayUntil(&mainLastWakeTime, frequency);
+
+
+        dev::pcb_led.setState(dshot::fromFloat(currentControlStatus[2]) <= 50);
+        control.motor_value[0] = dshot::fromFloat(currentControlStatus[2]) - 2;
+        dshot_write(control.motor_value);
+
         //vTaskDelay(frequency);
     }
 }

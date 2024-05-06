@@ -75,6 +75,11 @@ void dshot_write(uint16_t* motor_value);
 
 
 #ifdef __cplusplus
+
+namespace dshot {
+    uint16_t fromFloat(float f);
+}
+
 }
 #endif
 
