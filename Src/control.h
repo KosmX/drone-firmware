@@ -8,11 +8,14 @@
 
 // RT priority control loop
 #include "MadgwickAHRS.h"
+#include "crsf/Packets.h"
 #include <cinttypes>
 
 class Control {
 private:
     Madgwick madgwick;
+    crsf::Channels currentControlStatus{};
+    uint32_t counter = 0;
 
 
 public:

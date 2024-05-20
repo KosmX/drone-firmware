@@ -25,7 +25,6 @@ namespace entry {
     TickType_t mainLastWakeTime;
 
 
-
     extern "C" void StartDefaultTask(void *argument) {
         dev::pcb_led.setState(true);
 
@@ -52,14 +51,14 @@ namespace entry {
 
         os::Task task{"suicideTask"};
         task.start([] {
-            5+5; // do nothing useful then exit
+            5 + 5; // do nothing useful then exit
         });
 
         tasks::init(); // Start task threads
         sensor::sensors_init();
 
 
-        for (int i = 0; i < 100; i+= 2) {
+        for (int i = 0; i < 100; i += 2) {
             dshot_write(control.motor_value);
             os::sleep(2);
         }
@@ -68,69 +67,16 @@ namespace entry {
     }
 
     void rtLoop() {
-
         static uint32_t counter = 0;
 
-        static crsf::Channels currentControlStatus{};
-
-        auto& dataHolder = crsf::ELRSController::INSTANCE->controlData;
-        {
-            auto optional = dataHolder.get();
-            if (optional.has_value()){
-                currentControlStatus = optional.value();
-            }
-        }
-
-
-
-        dev::pcb_led.toggle();
-
-        if (sensor::bmpData.hasNew()) {
-
-            auto r = sensor::bmpData.get().value(); // just make it shorter
-
-            //sprintf(msg.get(), "pressure: %f, temp: %f\n", r.first, r.second);
-            //log("pressure: " + std::to_string(r.first) + ", temp: " + std::to_string(r.second) + "\n");
-            //HAL_UART_Transmit_DMA(&huart8, reinterpret_cast<const uint8_t *>(msg.c_str()), msg.size());
-        }
-
-        if (sensor::bmmData.hasNew()) {
-            auto r = sensor::bmmData.get().value();
-
-            //log("magnetic vector:\t" + std::to_string(r.x) + "\t" + std::to_string(r.y) + "\t" + std::to_string(r.z) + "\n");
-        }
-
-        {
-            auto r = dev::bmi->getData();
-            auto& a = r.first;
-            auto& g = r.second;
-
-            //log("accel:\t" + std::to_string(a.x) + "\t" + std::to_string(a.y) + "\t" + std::to_string(a.z) + "\n");
-            //log("gyro:\t" + std::to_string(g.x) + "\t" + std::to_string(g.y) + "\t" + std::to_string(g.z) + "\n");
-        }
-
-        //log("main loop took " + std::to_string((xTaskGetTickCount() - mainLastWakeTime)/(float)frequency) + " time to run\n");
-        //log(std::format("CH1: {}\tCH2: {}\tCH3: {}\tCH4: {}\n", currentControlStatus[0], currentControlStatus[1], currentControlStatus[2], currentControlStatus[3]));
-
-        counter++;
-        if (counter >= 4) counter = 0;
-        vTaskDelayUntil(&mainLastWakeTime, frequency);
-
+        control.controlLoop();
         if (xTaskGetTickCount() - mainLastWakeTime >= frequency) {
             log("Main loop took longer than expected");
 #ifdef USE_FULL_ASSERT
             assert_param(false);
 #endif
         }
-
-        dev::pcb_led.setState(dshot::fromFloat(currentControlStatus[2]) <= 50);
-        control.motor_value[1] = dshot::fromFloat(currentControlStatus[2]) - 2;
-        control.motor_value[2] = dshot::fromFloat(currentControlStatus[2]) - 2;
-        control.motor_value[3] = dshot::fromFloat(currentControlStatus[2]) - 2;
-        control.motor_value[0] = dshot::fromFloat(currentControlStatus[2]) - 2;
-        dshot_write(control.motor_value);
-
-        //vTaskDelay(frequency);
+        vTaskDelayUntil(&mainLastWakeTime, frequency);
     }
 }
 
