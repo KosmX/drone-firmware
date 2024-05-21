@@ -26,7 +26,9 @@ namespace os {
         size_t sizeMask;
         size_t startPos;
         size_t pos;
+#ifdef USE_FULL_ASSERT
         size_t dataSize;
+#endif
 
     public:
         RingBufferEntryPtr(const uint8_t* buffer, size_t size, size_t pos, size_t data_size);
@@ -42,8 +44,6 @@ namespace os {
         RingBufferEntryPtr operator++(int); // post increment
         RingBufferEntryPtr& operator--(); // pre increment
         RingBufferEntryPtr operator--(int); // post increment
-
-        [[nodiscard]] bool hasNext() const;
 
         // now we can do *p++
 

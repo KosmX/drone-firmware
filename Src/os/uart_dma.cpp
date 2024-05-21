@@ -106,16 +106,20 @@ namespace os {
     buffer{buffer},
     sizeMask{size - 1},
     pos{pos},
-    startPos{pos},
-    dataSize{data_size}
+    startPos{pos}
+#ifdef USE_FULL_ASSERT
+    ,dataSize{data_size}
+#endif
     {}
 
     char RingBufferEntryPtr::operator*() const {
-        if (pos - startPos < dataSize) {
-            return buffer[pos & sizeMask];
-        } else {
+#ifdef USE_FULL_ASSERT
+        if (pos - startPos >= dataSize) {
             throw std::out_of_range{"ringbuffer index"};
         }
+#endif
+
+        return buffer[pos & sizeMask];
     }
 
     uint8_t RingBufferEntryPtr::operator[](size_t pos) const {
@@ -148,10 +152,6 @@ namespace os {
         RingBufferEntryPtr tmp = *this;
         pos--;
         return tmp;
-    }
-
-    bool RingBufferEntryPtr::hasNext() const {
-        return pos - startPos + 1 < dataSize;
     }
 
     RingBufferEntryPtr RingBufferEntryPtr::operator+(size_t increment) const {
